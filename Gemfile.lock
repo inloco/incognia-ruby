@@ -8,7 +8,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.2)
     crack (0.4.5)
@@ -67,12 +67,13 @@ GEM
     ruby2_keywords (0.0.4)
     timecop (0.9.4)
     unicode-display_width (2.0.0)
-    webmock (3.13.0)
-      addressable (>= 2.3.6)
+    webmock (3.14.0)
+      addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
 
 PLATFORMS
+  ruby
   x86_64-darwin-20
 
 DEPENDENCIES
