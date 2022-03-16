@@ -1,0 +1,27 @@
+{
+  "id": "720d669e-057c-4af3-824a-451f8de15408",
+  "request_id": "ec814935-1624-47f0-af88-8334ae4834bc",
+  "risk_assessment": "low_risk",
+  "evidence": {
+    "device_model": "LM-X520",
+    "location_events_quantity": 20,
+    "location_services": {
+      "location_permission_enabled": true,
+      "location_sensors_enabled": true
+    },
+    "device_integrity": {
+      "probable_root": false,
+      "emulator": false,
+      "gps_spoofing": false,
+      "from_official_store": false
+    },
+    "geocode_quality": "good",
+    "location_events_near_address": 15,
+    "device_fraud_reputation": "unknown",
+    "activity_evidence": {
+      "first_known_address_activity": "2021-02-11T14:53:08.928Z",
+      "last_known_address_activity": "2021-02-17T15:28:46.018Z",
+      "first_address_verification": "2021-02-17T15:31:03.587Z"
+    }
+  }
+}

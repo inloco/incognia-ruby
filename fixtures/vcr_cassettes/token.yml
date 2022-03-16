@@ -1,0 +1,101 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://incognia.inloco.com.br/api/v2/token
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.4.2
+      Authorization:
+      - Basic R1BXSzFMQ1paSW8xRkxPQ0NuTExNcU44UWkxSHYzazQ6RUxHOV8yazU5T0hkMUdiVXhIaGRTdGtqZUI3TXlQZ21vRjhlR2YxM0xBMU1scmZRZ1Q1bkhFMmFIaVNobVc0WA==
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Fri, 28 May 2021 18:35:32 GMT
+      content-type:
+      - application/json
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      cf-cache-status:
+      - DYNAMIC
+      cf-request-id:
+      - 0a55dba85a0000db787b9d4000000001
+      expect-ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      report-to:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v2?s=TNlC7ygzRcV1NVUH05toX7rM1LCh0iEmsEwDAp%2Bmruqc6hMLyH%2Bb4cUreSYsSI96oTX%2FVfOnOzWPNZ5eYZwGww6giYqd97ZXMHfLpU7A%2BuiFoCyVeeqTCIRgsmZ1O787%2F2rN"}],"group":"cf-nel","max_age":604800}'
+      nel:
+      - '{"report_to":"cf-nel","max_age":604800}'
+      strict-transport-security:
+      - max-age=15552000; includeSubDomains; preload
+      x-content-type-options:
+      - nosniff
+      server:
+      - cloudflare
+      cf-ray:
+      - 65699553cdf2db78-GIG
+      alt-svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJFVkNPVGMwTkVaRk9EVTFNekUzTlVRMFEwSTNNekZDTVVFeE5ESkdSREJHUWpkQlFVSTVNUSJ9.eyJodHRwczovL2FjY291bnRzL29yZ2FuaXphdGlvbl9pZCI6IjQ5MSIsImlzcyI6Imh0dHBzOi8vaW5sb2NvLXByb2R1Y3Rpb24uYXV0aDAuY29tLyIsInN1YiI6IkdQV0sxTENaWklvMUZMT0NDbkxMTXFOOFFpMUh2M2s0QGNsaWVudHMiLCJhdWQiOiJodHRwczovL2luY29nbmlhLmlubG9jby5jb20uYnIiLCJpYXQiOjE2MjIyMjY5MzIsImV4cCI6MTYyMjIyODEzMiwiYXpwIjoiR1BXSzFMQ1paSW8xRkxPQ0NuTExNcU44UWkxSHYzazQiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.Csc3cJ4eqzqR4s-aLh5Qvdl41LrTyD2DnBe3iNv4gtwzAVqRD6rdTxZAfKzWwOdYZ91bw0o1aCVN7MA3fGj6dUqkgtylvCFdWVTU5xWlW6ugaZ6VMRuPmJkD0DkZuctjXkFl_Um9mw-_M-84CqSvrVqFHDK_AJrdymztcsc_aoFKVMDLFgn-gHBNT9TchLatePHFeRKa6S3IaevcR900DiAmeU4_BKvVYc_TlhS4iIJGwIXUNX4V2x-76CxSs6aFFJD3t76x1GehGdrjmxzis-ciWZrhflSWSFq_2M4kWFiCIiCgiFe0pln0JUG-u9Hm5yu5S3dPJ46Br3kg8MOZJQ","expires_in":"1200","token_type":"Bearer"}'
+  recorded_at: Fri, 28 May 2021 18:35:30 GMT
+- request:
+    method: post
+    uri: https://incognia.inloco.com.br/api/onboarding/signups
+    body:
+      encoding: UTF-8
+      string: '{"installation_id":"xyz"}'
+    headers:
+      User-Agent:
+      - Faraday v1.4.2
+      Authorization:
+      - Bearer access_token
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      date:
+      - Fri, 28 May 2021 18:35:33 GMT
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      cf-cache-status:
+      - DYNAMIC
+      cf-request-id:
+      - 0a55dbadde000009d0c5074000000001
+      expect-ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      report-to:
+      - '{"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v2?s=wRYcemb6TiPJlpWuANxj0o5Qq05jbH3gynAJX%2FNI8ErLVVffL65N7zUFJfOhFs1U9bUZqEUCkKOgJaD%2B%2FKYe%2FjeL4oPo%2FGyc3Ax1vvz4TCIOTEVMpRd%2FcCO1J11ulga8bve0"}],"group":"cf-nel","max_age":604800}'
+      nel:
+      - '{"report_to":"cf-nel","max_age":604800}'
+      strict-transport-security:
+      - max-age=15552000; includeSubDomains; preload
+      x-content-type-options:
+      - nosniff
+      server:
+      - cloudflare
+      cf-ray:
+      - 6569955c9fcd09d0-GIG
+      alt-svc:
+      - h3-27=":443"; ma=86400, h3-28=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Fri, 28 May 2021 18:35:31 GMT
+recorded_with: VCR 6.0.0
