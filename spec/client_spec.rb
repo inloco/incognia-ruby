@@ -86,7 +86,7 @@ module Incognia
         expect(subject.request(:post, 'v2/endpoint').body['foo']).to eq('bar')
       end
 
-      context "when 4xx" do
+      context "when receives errors" do
         it "raises exception when 4xx" do
           stub_token_request
           stub_signup_request_400(error: :example)
@@ -99,6 +99,15 @@ module Incognia
         it "raises exception when 5xx" do
           stub_token_request
           stub_signup_request_500
+
+          expect {
+            subject.request(:post, "v2/onboarding/signups")
+          }.to raise_exception APIError
+        end
+
+        it "raises exception when is another error" do
+          stub_token_request
+          stub_request_timeout("v2/onboarding/signups")
 
           expect {
             subject.request(:post, "v2/onboarding/signups")
