@@ -29,5 +29,11 @@ module Incognia
       message += "\n#{errors}" if errors
     end
   end
+
+  class APIAuthenticationError < StandardError
+    def initialize(message = "Informed credentials failed")
+      super(message)
+    end
+  end
   # Your code goes here...
 end

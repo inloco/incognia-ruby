@@ -145,6 +145,26 @@ module Incognia
           expect(stub).to have_been_made.twice
         end
       end
+
+      context "when receives unauthorized error" do
+        it "raises APIAuthenticationError" do
+          stub_token_request_401
+
+          expect {
+            subject.credentials
+          }.to raise_exception APIAuthenticationError
+        end
+      end
+
+      context "when receives other errors" do
+        it "raises APIError" do
+          stub_request_timeout("v2/token")
+
+          expect {
+            subject.credentials
+          }.to raise_exception APIError
+        end
+      end
     end
 
   end

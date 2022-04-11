@@ -51,6 +51,10 @@ module Incognia
       end
 
       response.success? ? build_credentials(response) : nil
+    rescue Faraday::UnauthorizedError => e
+      raise APIAuthenticationError
+    rescue Faraday::Error => e
+      raise APIError.new(e.to_s)
     end
 
     def build_credentials(raw_response)
