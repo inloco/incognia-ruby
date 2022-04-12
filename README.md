@@ -47,15 +47,36 @@ For sandbox credentials, refer to the [API testing guide]().
 
 ### Registering a Signup
 
+This method registers a new signup for the given installation and address, returning a signup assessment, containing the risk assessment and supporting evidence:
+
 ```ruby
 address = Incognia::Address.new(line: "West 34th Street, New York City, NY 10001")
 installation_id = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 
-response = api.register_signup(
+assessment = api.register_signup(
   installation_id: installation_id,
-  address: a
+  address: address
 )
 
 # => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="..", evidence=...>
 
 ```
+
+### Getting a Signup
+
+This method allows you to query the latest assessment for a given signup event, returning signup assessment, containing the risk assessment and supporting evidence:
+
+```ruby
+assessment = api.get_signup_assessment(signup_id: "95a9fc56-f65e-436b-a87f-a1338043678f")
+
+# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="..", evidence=...>
+
+```
+
+## Exception handling
+
+Every method call can throw `APIError` and `APIAuthenticationError`.
+
+`APIError` is thrown when the API returned an unexpected http status code or if something goes wrong with the request (network failure, for example). You can retrieve it by calling the `status` method in the exception, along with the `errors` method, which returns the api response payload, which might include additional details. As any subclass of `StandardError` it also responds to `message`.
+
+`APIAuthenticationError` indicates that the credentials used to authenticate were considered invalid by the API.
