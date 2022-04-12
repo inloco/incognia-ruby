@@ -25,6 +25,15 @@ module Incognia
 
       SignupAssessment.from_hash(response.body) if response.success?
     end
+
+    def get_signup_assessment(signup_id:)
+      response = connection.request(
+        :get,
+        "v2/onboarding/signups/#{signup_id}"
+      )
+
+      SignupAssessment.from_hash(response.body) if response.success?
+    end
   end
 
 end
