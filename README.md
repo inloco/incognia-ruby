@@ -1,5 +1,7 @@
 # Incognia Ruby Library
 
+[![Ruby](https://github.com/inloco/incognia-ruby/actions/workflows/main.yml/badge.svg)](https://github.com/inloco/incognia-ruby/actions/workflows/main.yml)
+
 Incognia Ruby library provides easy access to the Incogia API from Ruby
 applications. It includes:
 
@@ -80,3 +82,17 @@ Every method call can throw `APIError` and `APIAuthenticationError`.
 `APIError` is thrown when the API returned an unexpected http status code or if something goes wrong with the request (network failure, for example). You can retrieve it by calling the `status` method in the exception, along with the `errors` method, which returns the api response payload, which might include additional details. As any subclass of `StandardError` it also responds to `message`.
 
 `APIAuthenticationError` indicates that the credentials used to authenticate were considered invalid by the API.
+
+## How to Contribute
+
+If you have found a bug or if you have a feature request, please report them at this repository issues section.
+
+### Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## License
+
+The gem is available as open source under the terms of the [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
