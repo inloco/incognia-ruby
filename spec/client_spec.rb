@@ -86,7 +86,7 @@ module Incognia
         expect(subject.request(:post, 'v2/endpoint').body['foo']).to eq('bar')
       end
 
-      context "when 4xx" do
+      context "when receives errors" do
         it "raises exception when 4xx" do
           stub_token_request
           stub_signup_request_400(error: :example)
@@ -99,6 +99,15 @@ module Incognia
         it "raises exception when 5xx" do
           stub_token_request
           stub_signup_request_500
+
+          expect {
+            subject.request(:post, "v2/onboarding/signups")
+          }.to raise_exception APIError
+        end
+
+        it "raises exception when is another error" do
+          stub_token_request
+          stub_request_timeout("v2/onboarding/signups")
 
           expect {
             subject.request(:post, "v2/onboarding/signups")
@@ -143,6 +152,26 @@ module Incognia
           Timecop.travel(Time.now + 1200) { subject.credentials }
 
           expect(stub).to have_been_made.twice
+        end
+      end
+
+      context "when receives unauthorized error" do
+        it "raises APIAuthenticationError" do
+          stub_token_request_401
+
+          expect {
+            subject.credentials
+          }.to raise_exception APIAuthenticationError
+        end
+      end
+
+      context "when receives other errors" do
+        it "raises APIError" do
+          stub_request_timeout("v2/token")
+
+          expect {
+            subject.credentials
+          }.to raise_exception APIError
         end
       end
     end

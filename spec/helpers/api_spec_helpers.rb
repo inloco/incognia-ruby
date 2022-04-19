@@ -15,11 +15,22 @@ module APISpecHelpers
     Regexp.new("https://")
   end
 
+  def stub_request_timeout(endpoint)
+    stub_request(:post, "https://api.incognia.com/api/#{endpoint}").to_timeout
+  end
+
   def stub_token_request
     stub_request(:post, "https://api.incognia.com/api/v2/token").
       to_return(
         status: 200,
         body: token_fixture,
+        headers: { 'Content-Type' => 'application/json', 'Date' => Time.now.utc })
+  end
+
+  def stub_token_request_401
+    stub_request(:post, "https://api.incognia.com/api/v2/token").
+      to_return(
+        status: 401,
         headers: { 'Content-Type' => 'application/json', 'Date' => Time.now.utc })
   end
 

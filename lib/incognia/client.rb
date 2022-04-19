@@ -4,7 +4,7 @@ module Incognia
   class Client
     # TODO:
     # (ok) http/adapter specific code
-    # raises network/authentication errors
+    # (ok) raises network/authentication errors
     # (ok) handles token refreshing ok
     # future: handles retrying
     attr_reader :connection
@@ -31,6 +31,8 @@ module Incognia
       end
     rescue Faraday::ClientError, Faraday::ServerError => e
       raise APIError.new(e.to_s, e.response)
+    rescue Faraday::Error => e
+      raise APIError.new(e.to_s)
     end
 
     def credentials
@@ -51,6 +53,10 @@ module Incognia
       end
 
       response.success? ? build_credentials(response) : nil
+    rescue Faraday::UnauthorizedError => e
+      raise APIAuthenticationError
+    rescue Faraday::Error => e
+      raise APIError.new(e.to_s)
     end
 
     def build_credentials(raw_response)
