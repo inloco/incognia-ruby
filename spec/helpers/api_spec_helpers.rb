@@ -58,4 +58,15 @@ module APISpecHelpers
         status: 500,
         headers: { 'Content-Type' => 'application/json' })
   end
+
+  def stub_get_signup_request(signup_id:)
+    json_body = JSON.parse(unknown_signup_fixture, symbolize_names: true)
+    json_body.merge(id: signup_id)
+
+    stub_request(:get, "https://api.incognia.com/api/v2/onboarding/signups/#{signup_id}").
+      to_return(
+        status: 200,
+        body: json_body.to_json,
+        headers: { 'Content-Type' => 'application/json' })
+  end
 end
