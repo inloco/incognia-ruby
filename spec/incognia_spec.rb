@@ -56,6 +56,22 @@ module Incognia
       end
 
       context "HTTP request" do
+        it "hits the endpoint with installation_id" do
+          stub_token_request
+
+          stub = stub_signup_request
+          stub.with(
+            body: { installation_id: 'id' },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          subject.register_signup(installation_id: 'id')
+
+          expect(stub).to have_been_made.once
+        end
+
         it "hits the endpoint with installation_id and address_line" do
           stub_token_request
 

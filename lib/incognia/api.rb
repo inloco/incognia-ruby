@@ -15,12 +15,14 @@ module Incognia
                                host: "https://api.incognia.com/api")
     end
 
-    def register_signup(installation_id:, address: )
+   def register_signup(installation_id:, address: nil)
+      params = { installation_id: installation_id }
+      params.merge!(address.to_hash) if address
+
       response = connection.request(
         :post,
         'v2/onboarding/signups',
-        installation_id: installation_id,
-        **address.to_hash
+        params
       )
 
       SignupAssessment.from_hash(response.body) if response.success?
