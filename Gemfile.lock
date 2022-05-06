@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    incognia_api (0.1.0)
+    incognia_api (0.2.0)
       faraday
       faraday_middleware
 
@@ -13,19 +13,25 @@ GEM
     crack (0.4.5)
       rexml
     diff-lcs (1.4.4)
-    faraday (1.4.2)
+    faraday (1.7.1)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
+      faraday-httpclient (~> 1.0.1)
       faraday-net_http (~> 1.0)
       faraday-net_http_persistent (~> 1.1)
+      faraday-patron (~> 1.0)
+      faraday-rack (~> 1.0)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords (>= 0.0.4)
     faraday-em_http (1.0.0)
     faraday-em_synchrony (1.0.0)
     faraday-excon (1.1.0)
+    faraday-httpclient (1.0.1)
     faraday-net_http (1.0.1)
-    faraday-net_http_persistent (1.1.0)
+    faraday-net_http_persistent (1.2.0)
+    faraday-patron (1.0.0)
+    faraday-rack (1.0.0)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
     hashdiff (1.0.1)
@@ -46,7 +52,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    ruby2_keywords (0.0.4)
+    ruby2_keywords (0.0.5)
     timecop (0.9.4)
     webmock (3.14.0)
       addressable (>= 2.8.0)
