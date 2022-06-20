@@ -36,6 +36,20 @@ module Incognia
 
       SignupAssessment.from_hash(response.body) if response.success?
     end
-  end
 
+    def register_feedback(event: , timestamp: nil, **ids)
+      timestamp = timestamp.strftime('%s%L') if timestamp.respond_to? :strftime
+
+      params = { event: event, timestamp: timestamp&.to_i }.compact
+      params.merge!(ids)
+
+      response = connection.request(
+        :post,
+        '/api/v2/feedbacks',
+        params
+      )
+
+      response.success?
+    end
+  end
 end
