@@ -8,6 +8,7 @@ require_relative "incognia/api"
 
 require_relative "incognia/resources/api_resource"
 require_relative "incognia/resources/signup_assessment"
+require_relative "incognia/resources/login_assessment"
 require_relative "incognia/resources/credentials"
 
 require_relative "incognia/constants/feedback_event"

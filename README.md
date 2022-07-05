@@ -75,6 +75,40 @@ assessment = api.get_signup_assessment(signup_id: "95a9fc56-f65e-436b-a87f-a1338
 
 ```
 
+### Registering a Login
+
+This method registers a new login for the given installation and account, returning a login assessment, containing the risk assessment and supporting evidence:
+
+```ruby
+installation_id = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
+account_id = 'account-identifier-123'
+
+assessment = api.register_login(
+  installation_id: installation_id,
+  account_id: account_id,
+)
+
+# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+
+```
+
+It also supports optional parameters, for example:
+
+```ruby
+installation_id = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
+account_id = 'account-identifier-123'
+external_id = 'some-external-identifier'
+
+assessment = api.register_login(
+  installation_id: installation_id,
+  account_id: account_id,
+  external_id: external_id,
+  eval: false # can be used to register a new login without evaluating it
+)
+
+# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+```
+
 ### Registering a Feedback
 
 This method registers a feedback event for the given identifiers (optional arguments), returning true when success.
