@@ -69,4 +69,11 @@ module APISpecHelpers
         body: json_body.to_json,
         headers: { 'Content-Type' => 'application/json' })
   end
+
+  def stub_register_feedback_request
+    stub_request(:post, "https://api.incognia.com/api/v2/feedbacks").
+      to_return(
+        status: 200,
+        headers: { 'Content-Type' => 'application/json' })
+  end
 end

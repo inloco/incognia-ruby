@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+require 'securerandom'
 
 module Incognia
   RSpec.describe Incognia::Api do
-    subject do
+    subject(:api) do
       Api.new(client_id: 'client_id', client_secret: 'client_secret')
     end
 
@@ -45,7 +46,7 @@ module Incognia
         stub_token_request
         stub_signup_request
 
-        signup = subject.register_signup(installation_id: 'id', address: address)
+        signup = api.register_signup(installation_id: 'id', address: address)
 
         expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
         expect(signup.id).
@@ -67,7 +68,7 @@ module Incognia
             }
           )
 
-          subject.register_signup(installation_id: 'id')
+          api.register_signup(installation_id: 'id')
 
           expect(stub).to have_been_made.once
         end
@@ -83,7 +84,7 @@ module Incognia
             }
           )
 
-          subject.register_signup(installation_id: 'id', address: address)
+          api.register_signup(installation_id: 'id', address: address)
 
           expect(stub).to have_been_made.once
         end
@@ -99,7 +100,7 @@ module Incognia
             }
           )
 
-          subject.register_signup(installation_id: 'id', address: structured_address)
+          api.register_signup(installation_id: 'id', address: structured_address)
 
           expect(stub).to have_been_made.once
         end
@@ -115,7 +116,7 @@ module Incognia
             }
           )
 
-          subject.register_signup(installation_id: 'id', address: coordinates_address)
+          api.register_signup(installation_id: 'id', address: coordinates_address)
 
           expect(stub).to have_been_made.once
         end
@@ -130,7 +131,7 @@ module Incognia
         stub_token_request
         stub_get_signup_request(signup_id: signup_id)
 
-        signup = subject.get_signup_assessment(signup_id: signup_id)
+        signup = api.get_signup_assessment(signup_id: signup_id)
 
         expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
         expect(signup.id).
@@ -151,12 +152,117 @@ module Incognia
             }
           )
 
-          subject.get_signup_assessment(signup_id: signup_id)
+          api.get_signup_assessment(signup_id: signup_id)
 
           expect(stub).to have_been_made.once
         end
       end
 
+    end
+
+    describe "#register_feedback" do
+      let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
+      let(:timestamp) { 1655749693000 }
+
+      before { stub_token_request }
+
+      it "when successful returns true" do
+        stub_register_feedback_request
+
+        feedback_registered = api.register_feedback(event: event, timestamp: timestamp)
+        expect(feedback_registered).to be(true)
+      end
+
+      context "HTTP request" do
+        it "hits the endpoint with event and timestamp" do
+          stub = stub_register_feedback_request
+          stub.with(
+            body: { event: event, timestamp: timestamp },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          api.register_feedback(event: event, timestamp: timestamp)
+
+          expect(stub).to have_been_made.once
+        end
+
+        context "when receiving timestamp as a Time" do
+          let(:timestamp) { Time.now }
+
+          it "hits the endpoint with timestamp in milliseconds" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event, timestamp: timestamp.strftime('%s%L').to_i },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            api.register_feedback(event: event, timestamp: timestamp)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        context "when receiving timestamp as a DateTime" do
+          let(:timestamp) { DateTime.now }
+
+          it "hits the endpoint with timestamp in milliseconds" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event, timestamp: timestamp.strftime('%s%L').to_i },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            api.register_feedback(event: event, timestamp: timestamp)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        context "when not receiving timestamp" do
+          it "hits the endpoint without timestamp" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            api.register_feedback(event: event)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        context "when receiving ids" do
+          shared_examples_for "receiving ids" do |id_name|
+            let(:id) { SecureRandom.uuid }
+
+            it "hits the endpoint with #{id_name}" do
+              stub = stub_register_feedback_request.with(
+                body: { event: event, timestamp: timestamp, id_name => id },
+                headers: {
+                  'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+                }
+              )
+
+              api.register_feedback(event: event, timestamp: timestamp, id_name => id)
+
+              expect(stub).to have_been_made.once
+            end
+          end
+
+          it_behaves_like 'receiving ids', :installation_id
+          it_behaves_like 'receiving ids', :account_id
+          it_behaves_like 'receiving ids', :external_id
+          it_behaves_like 'receiving ids', :signup_id
+          it_behaves_like 'receiving ids', :login_id
+          it_behaves_like 'receiving ids', :payment_id
+        end
+      end
     end
 
     def expect_evidences_to_match(signup, expected)

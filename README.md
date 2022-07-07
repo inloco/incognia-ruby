@@ -75,6 +75,40 @@ assessment = api.get_signup_assessment(signup_id: "95a9fc56-f65e-436b-a87f-a1338
 
 ```
 
+### Registering a Feedback
+
+This method registers a feedback event for the given identifiers (optional arguments), returning true when success.
+
+The `timestamp` argument should be a _Time_, _DateTime_ or an _Integer_ being the timestamp in milliseconds:
+
+```ruby
+account_id = "cdb2cfbb-8ad8-4668-b276-5fff9bbfdc96"
+timestamp = DateTime.parse('2022-06-20 23:29:00 UTC-3')
+
+success = api.register_feedback(
+  event: Incognia::Constants::FeedbackEvent::IDENTITY_FRAUD,
+  timestamp: timestamp,
+  account_id: account_id
+)
+
+# => true
+```
+
+For custom fraud, set the value of `event` with the corresponding code:
+
+```ruby
+success = api.register_feedback(
+  event: 'custom_fraud_name'
+  timestamp: timestamp,
+  account_id: account_id,
+  installation_id: installation_id
+)
+
+# => true
+```
+
+Check the [documentation](https://developer.incognia.com) to see possible identifiers for each event type.
+
 ## Exception handling
 
 Every method call can throw `APIError` and `APIAuthenticationError`.
