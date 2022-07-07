@@ -37,6 +37,23 @@ module Incognia
       SignupAssessment.from_hash(response.body) if response.success?
     end
 
+   def register_login(installation_id:, account_id:, **opts)
+     params = {
+       type: :login,
+       installation_id: installation_id,
+       account_id: account_id,
+     }
+     params.merge!(opts)
+
+      response = connection.request(
+        :post,
+        'v2/authentication/transactions',
+        params
+      )
+
+      LoginAssessment.from_hash(response.body) if response.success?
+    end
+
     def register_feedback(event: , timestamp: nil, **ids)
       timestamp = timestamp.strftime('%s%L') if timestamp.respond_to? :strftime
 

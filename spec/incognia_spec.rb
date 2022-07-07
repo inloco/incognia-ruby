@@ -160,6 +160,88 @@ module Incognia
 
     end
 
+    describe "#register_login" do
+      let(:installation_id) { SecureRandom.uuid }
+      let(:account_id) { SecureRandom.uuid }
+
+      it "when successful returns the resource" do
+        stub_token_request
+        stub_login_request
+
+        login = api.register_login(
+          installation_id: installation_id,
+          account_id: account_id
+        )
+
+        expected = JSON.parse(unknown_login_fixture, symbolize_names: true)
+        expect(login.id).to eql expected[:id]
+        expect(login.risk_assessment).to eql expected[:risk_assessment]
+        expect_evidences_to_match(login, expected)
+      end
+
+      context "HTTP request" do
+        it "hits the endpoint with installation_id and account_id" do
+          stub_token_request
+
+          stub = stub_login_request.with(
+            body: {
+              type: 'login',
+              installation_id: installation_id, account_id: account_id
+            },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          login = api.register_login(
+            installation_id: installation_id,
+            account_id: account_id
+          )
+
+          expect(stub).to have_been_made.once
+        end
+
+        context 'when receiving any other optional arguments' do
+          shared_examples_for 'receiving optional args' do |optional_arguments|
+            it "hits the endpoint also with #{optional_arguments}" do
+              stub_token_request
+
+              stub = stub_login_request.with(
+                body: {
+                  type: 'login',
+                  installation_id: installation_id,
+                  account_id: account_id,
+                }.merge(opts),
+                headers: {
+                  'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+                }
+              )
+
+              login = api.register_login(
+                installation_id: installation_id,
+                account_id: account_id,
+                **opts
+              )
+
+              expect(stub).to have_been_made.once
+            end
+          end
+
+          it_behaves_like 'receiving optional args', 'external_id' do
+            let(:opts) { { external_id: 'external-id' } }
+          end
+          it_behaves_like 'receiving optional args', 'eval' do
+            let(:opts) { { eval: false } }
+          end
+          it_behaves_like 'receiving optional args', 'external_id and eval' do
+            let(:opts) { { external_id: 'external-id', eval: false } }
+          end
+        end
+      end
+
+    end
+
+
     describe "#register_feedback" do
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
       let(:timestamp) { 1655749693000 }
@@ -265,14 +347,12 @@ module Incognia
       end
     end
 
-    def expect_evidences_to_match(signup, expected)
-      expect(signup.evidence.device_model).
+    def expect_evidences_to_match(model, expected)
+      expect(model.evidence.device_model).
         to eql expected[:evidence][:device_model]
-      expect(signup.evidence.location_events_quantity).
-        to eql expected[:evidence][:location_events_quantity]
-      expect(signup.evidence.location_services.location_permission_enabled).
+      expect(model.evidence.location_services.location_permission_enabled).
         to eql expected[:evidence][:location_services][:location_permission_enabled]
-      expect(signup.evidence.location_services.location_sensors_enabled).
+      expect(model.evidence.location_services.location_sensors_enabled).
         to eql expected[:evidence][:location_services][:location_sensors_enabled]
     end
   end

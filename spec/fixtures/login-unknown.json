@@ -1,0 +1,29 @@
+{
+  "id": "2213450e-4bf6-4442-b19d-8fba51603a7c",
+  "risk_assessment": "unknown_risk",
+  "reasons": [],
+  "evidence": {
+    "device_model": "iPhone10,1",
+    "known_account": false,
+    "location_services": {
+      "location_permission_enabled": false,
+      "location_sensors_enabled": false
+    },
+    "device_integrity": {
+      "probable_root": false,
+      "emulator": false,
+      "gps_spoofing": false,
+      "from_official_store": true,
+      "app_tampering": false
+    },
+    "device_fraud_reputation": "unknown",
+    "device_behavior_reputation": "unknown",
+    "account_integrity": {
+      "recent_high_risk_assessment": false
+    },
+    "accessed_accounts": 0,
+    "app_reinstallations": 0,
+    "first_device_login": true
+  },
+  "device_id": "kiOHz6bIHWKQJHNK2TN_3sHFND3yOpFv3xQY0Mc2AnLci26hRFJkdd96Gi981tRLAsxIFTZQDOYmZqZP24sEBQ"
+}
