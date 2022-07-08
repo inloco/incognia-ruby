@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.3.0] - 2022-05-06
+
+- Allow registering feedbacks
+- Allow registering logins
+
 ## [0.2.0] - 2022-05-06
 
 - Allow registering signups without address
