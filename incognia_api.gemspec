@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "lib/incognia/version"
+require_relative "lib/incognia_api/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "incognia_api"
@@ -10,12 +10,12 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Official Ruby lib for communicating with Incognia API"
   spec.description   = "Official Ruby lib for communicating with Incognia API"
-  spec.homepage      = "https://github.com/inloco/incognia-api-ruby"
+  spec.homepage      = "https://github.com/inloco/incognia-ruby"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/inloco/incognia-api-ruby"
-  spec.metadata["changelog_uri"] = "https://github.com/inloco/incognia-api-ruby/blob/master/"
+  spec.metadata["source_code_uri"] = "https://github.com/inloco/incognia-ruby"
+  spec.metadata["changelog_uri"] = "https://github.com/inloco/incognia-ruby/blob/master/"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

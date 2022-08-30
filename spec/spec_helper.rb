@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "incognia"
+require "incognia_api"
 require "helpers/api_spec_helpers"
 require "webmock/rspec"
 require "timecop"

@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require_relative "incognia/version"
-require_relative "incognia/client"
-require_relative "incognia/util"
-require_relative "incognia/address"
-require_relative "incognia/api"
+require_relative "incognia_api/version"
+require_relative "incognia_api/client"
+require_relative "incognia_api/util"
+require_relative "incognia_api/address"
+require_relative "incognia_api/api"
 
-require_relative "incognia/resources/api_resource"
-require_relative "incognia/resources/signup_assessment"
-require_relative "incognia/resources/login_assessment"
-require_relative "incognia/resources/credentials"
+require_relative "incognia_api/resources/api_resource"
+require_relative "incognia_api/resources/signup_assessment"
+require_relative "incognia_api/resources/login_assessment"
+require_relative "incognia_api/resources/credentials"
 
-require_relative "incognia/constants/feedback_event"
+require_relative "incognia_api/constants/feedback_event"
 
 module Incognia
   class APIError < StandardError
