@@ -11,6 +11,7 @@ module Incognia
       PASSWORD_CHANGE_FAILED = 'password_change_failed'.freeze
       PASSWORD_CHANGED_SUCCESSFULLY = 'password_changed_successfully'.freeze
       PROMOTION_ABUSE = 'promotion_abuse'.freeze
+      RESET = 'reset'.freeze
       VERIFIED = 'verified'.freeze
 
       SIGNUP_ACCEPTED = 'signup_accepted'.freeze
