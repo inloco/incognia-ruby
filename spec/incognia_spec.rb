@@ -41,12 +41,13 @@ module Incognia
       let(:structured_address) { Address.new(structured: structured_format ) }
       let(:address) { Address.new(line: line_format) }
       let(:coordinates_address) { Address.new(coordinates: coordinates_format) }
+      let(:installation_id) { SecureRandom.uuid }
 
       it "when successful returns the resource" do
         stub_token_request
         stub_signup_request
 
-        signup = api.register_signup(installation_id: 'id', address: address)
+        signup = api.register_signup(installation_id: installation_id, address: address)
 
         expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
         expect(signup.id).
@@ -62,13 +63,13 @@ module Incognia
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: 'id' },
+            body: { installation_id: installation_id },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: 'id')
+          api.register_signup(installation_id: installation_id)
 
           expect(stub).to have_been_made.once
         end
@@ -78,13 +79,13 @@ module Incognia
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: 'id', address_line: line_format },
+            body: { installation_id: installation_id, address_line: line_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: 'id', address: address)
+          api.register_signup(installation_id: installation_id, address: address)
 
           expect(stub).to have_been_made.once
         end
@@ -94,13 +95,13 @@ module Incognia
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: 'id', structured_address: structured_format },
+            body: { installation_id: installation_id, structured_address: structured_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: 'id', address: structured_address)
+          api.register_signup(installation_id: installation_id, address: structured_address)
 
           expect(stub).to have_been_made.once
         end
@@ -110,15 +111,47 @@ module Incognia
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: 'id', address_coordinates: coordinates_format },
+            body: { installation_id: installation_id, address_coordinates: coordinates_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: 'id', address: coordinates_address)
+          api.register_signup(installation_id: installation_id, address: coordinates_address)
 
           expect(stub).to have_been_made.once
+        end
+
+        context 'when receiving any other optional arguments' do
+          shared_examples_for 'receiving optional args' do |optional_arguments|
+            it "hits the endpoint also with #{optional_arguments}" do
+              stub_token_request
+
+              stub = stub_signup_request.with(
+                body: { installation_id: installation_id }.merge(opts),
+                headers: {
+                  'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+                }
+              )
+
+              login = api.register_signup(
+                installation_id: installation_id,
+                **opts
+              )
+
+              expect(stub).to have_been_made.once
+            end
+          end
+
+          it_behaves_like 'receiving optional args', 'account_id' do
+            let(:opts) { { account_id: SecureRandom.uuid } }
+          end
+          it_behaves_like 'receiving optional args', 'external_id' do
+            let(:opts) { { external_id: SecureRandom.uuid } }
+          end
+          it_behaves_like 'receiving optional args', 'policy_id' do
+            let(:opts) { { policy_id: SecureRandom.uuid } }
+          end
         end
       end
 
