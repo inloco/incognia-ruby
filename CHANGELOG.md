@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.3.1] - 2023-01-24
+
+- Allows optional params on #register_signup
+- Adds Reset feedback event
+
 ## [0.3.0] - 2022-05-06
 
 - Allow registering feedbacks
