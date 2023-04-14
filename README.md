@@ -148,7 +148,7 @@ For custom fraud, set the value of `event` with the corresponding code:
 
 ```ruby
 success = api.register_feedback(
-  event: 'custom_fraud_name'
+  event: 'custom_fraud_name',
   timestamp: timestamp,
   account_id: account_id,
   installation_id: installation_id
