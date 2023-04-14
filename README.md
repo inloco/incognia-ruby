@@ -64,6 +64,22 @@ assessment = api.register_signup(
 
 ```
 
+It also supports optional parameters, for example:
+
+```ruby
+address = Incognia::Address.new(line: "West 34th Street, New York City, NY 10001")
+installation_id = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
+external_id = "7b02736a-7718-4b83-8982-f68fb6f501fa"
+
+assessment = api.register_signup(
+  installation_id: installation_id,
+  address: address,
+  external_id: external_id
+)
+
+# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+```
+
 ### Getting a Signup
 
 This method allows you to query the latest assessment for a given signup event, returning signup assessment, containing the risk assessment and supporting evidence:
