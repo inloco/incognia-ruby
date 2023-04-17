@@ -1,9 +1,13 @@
 ## [Unreleased]
 
+## [0.4.0] - 2023-04-14
+
+- Rename main filename to match the gem name
+
 ## [0.3.1] - 2023-01-24
 
-- Allows optional params on #register_signup
-- Adds Reset feedback event
+- Allow optional params on #register_signup
+- Add Reset feedback event
 
 ## [0.3.0] - 2022-05-06
 
