@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    incognia_api (0.4.1)
-      faraday
-      faraday_middleware
+    incognia_api (0.5.0)
+      faraday (~> 1.10)
+      faraday_middleware (~> 1.2)
 
 GEM
   remote: https://rubygems.org/

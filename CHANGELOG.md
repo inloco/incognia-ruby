@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.5.0] - 2023-04-20
+
+- Specify dependencies version
+
 ## [0.4.0] - 2023-04-14
 
 - Rename main filename to match the gem name
