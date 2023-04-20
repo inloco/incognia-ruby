@@ -15,16 +15,18 @@ module Incognia
       @host = host
 
       @connection = Faraday.new(host) do |faraday|
-        faraday.adapter Faraday.default_adapter
         faraday.request :json
         faraday.response :json, content_type: /\bjson$/
-        # faraday.response :logger, nil, { headers: true, bodies: true }
         faraday.response :raise_error
+
+        faraday.adapter Faraday.default_adapter
       end
     end
 
     def request(method, endpoint = nil, data = nil, headers = {})
-      connection.send(method, endpoint, data, headers) do |r|
+      json_data = JSON.generate(data) if data
+
+      connection.send(method, endpoint, json_data, headers) do |r|
         r.headers[Faraday::Request::Authorization::KEY] ||= Faraday::Request
           .lookup_middleware(:authorization)
           .header(:Bearer, credentials.access_token)
