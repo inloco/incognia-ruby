@@ -12,4 +12,5 @@ gem "rspec", "~> 3.0"
 group :test do
   gem "webmock"
   gem "timecop"
+  gem "pry"
 end

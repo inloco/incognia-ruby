@@ -4,6 +4,7 @@ require "incognia_api"
 require "helpers/api_spec_helpers"
 require "webmock/rspec"
 require "timecop"
+require "pry"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
