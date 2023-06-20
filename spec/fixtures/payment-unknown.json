@@ -1,0 +1,36 @@
+{
+  "id": "f3bf8d46-1abcd-2abcd-3abcd-51f95b05f6fb",
+  "risk_assessment": "unknown",
+  "reasons": [],
+  "evidence": {
+    "device_model": "iPhone9,3",
+    "known_account": false,
+    "location_services": {
+      "location_permission_enabled": true,
+      "location_sensors_enabled": true
+    },
+    "device_integrity": {
+      "probable_root": false,
+      "emulator": false,
+      "gps_spoofing": false,
+      "from_official_store": true,
+      "app_tampering": false,
+      "installation_source": "not_available"
+    },
+    "device_fraud_reputation": "unknown",
+    "device_behavior_reputation": "unknown",
+    "accessed_accounts": 2,
+    "app_reinstallations": 0,
+    "active_installations": 2,
+    "first_device_login": true,
+    "app_tampering": {
+      "result": "not_available",
+      "app_debugging": "not_available",
+      "code_injection": "not_available",
+      "signature_mismatch": "not_available",
+      "package_mismatch": "not_available"
+    }
+  },
+  "installation_id": "installation_id",
+  "device_id": "device_id"
+}

@@ -69,5 +69,18 @@ module Incognia
 
       response.success?
     end
+
+    def register_payment(installation_id:, account_id:, **opts)
+      params = { installation_id: installation_id, account_id: account_id, type: :payment }
+      params.merge!(opts)
+
+      response = connection.request(
+        :post,
+        'v2/authentication/transactions',
+        params
+      )
+
+      PaymentAssessment.from_hash(response.body) if response.success?
+    end
   end
 end
