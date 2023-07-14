@@ -274,6 +274,85 @@ module Incognia
 
     end
 
+    describe "#register_payment" do
+      let(:installation_id) { SecureRandom.uuid }
+      let(:account_id) { SecureRandom.uuid }
+
+      it "when successful returns the resource" do
+        stub_token_request
+        stub_payment_request
+
+        payment = api.register_payment(
+          installation_id: installation_id,
+          account_id: account_id
+        )
+
+        expected = JSON.parse(unknown_payment_fixture, symbolize_names: true)
+        expect(payment.id).to eql expected[:id]
+        expect(payment.risk_assessment).to eql expected[:risk_assessment]
+        expect_evidences_to_match(payment, expected)
+      end
+
+      context "HTTP request" do
+        it "hits the endpoint with installation_id and account_id" do
+          stub_token_request
+
+          stub = stub_payment_request.with(
+            body: {
+              type: 'payment',
+              installation_id: installation_id, account_id: account_id
+            },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          payment = api.register_payment(
+            installation_id: installation_id,
+            account_id: account_id
+          )
+
+          expect(stub).to have_been_made.once
+        end
+
+        context 'when receiving any other optional arguments' do
+          shared_examples_for 'receiving optional args' do |optional_arguments|
+            it "hits the endpoint also with #{optional_arguments}" do
+              stub_token_request
+
+              stub = stub_payment_request.with(
+                body: {
+                  type: 'payment',
+                  installation_id: installation_id,
+                  account_id: account_id
+                }.merge(opts),
+                headers: {
+                  'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+                }
+              )
+
+              payment = api.register_payment(
+                installation_id: installation_id,
+                account_id: account_id,
+                **opts
+              )
+
+              expect(stub).to have_been_made.once
+            end
+          end
+
+          it_behaves_like 'receiving optional args', 'external_id', 'payment request', 'aaa' do
+            let(:opts) { { external_id: 'external-id' } }
+          end
+          it_behaves_like 'receiving optional args', 'payment_value' do
+            let(:opts) { { payment_value: { 'amount': 5.0, 'currency': 'BRL' } } }
+          end
+          it_behaves_like 'receiving optional args', 'external_id and payment_value' do
+            let(:opts) { { external_id: 'external-id', payment_value: 12.5 } }
+          end
+        end
+      end
+    end
 
     describe "#register_feedback" do
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
@@ -389,5 +468,4 @@ module Incognia
         to eql expected[:evidence][:location_services][:location_sensors_enabled]
     end
   end
-
 end

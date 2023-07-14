@@ -125,6 +125,84 @@ assessment = api.register_login(
 # => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
 ```
 
+### Registering Payment
+
+This method registers a new payment for the given installation and account, returning a `hash`,
+containing the risk assessment and supporting evidence.
+
+```ruby
+assessment = api.register_payment(
+  installation_id: 'installation-id',
+  account_id: 'account-id'
+)
+
+# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+```
+
+It also supports optional parameters, for example:
+
+```ruby
+addresses = [
+  {
+    'type': 'shipping',
+    'structured_address': {
+      'locale': 'pt-BR',
+      'country_name': 'Brasil',
+      'country_code': 'BR',
+      'state': 'SP',
+      'city': 'São Paulo',
+      'borough': '',
+      'neighborhood': 'Bela Vista',
+      'street': 'Av. Paulista',
+      'number': '1578',
+      'complements': 'Andar 2',
+      'postal_code': '01310-200'
+    },
+    'address_coordinates': {
+      'lat': -23.561414,
+      'lng': -46.6558819
+    }
+  }
+]
+
+payment_value = {
+  'amount': 5.0,
+  'currency': 'BRL'
+}
+
+payment_methods = [
+  {
+    'type': 'credit_card',
+    'credit_card_info': {
+      'bin': '123456',
+      'last_four_digits': '1234',
+      'expiry_year': '2027',
+      'expiry_month': '10'
+    }
+  },
+  {
+    'type': 'debit_card',
+    'debit_card_info': {
+      'bin': '123456',
+      'last_four_digits': '1234',
+      'expiry_year': '2027',
+      'expiry_month': '10'
+    }
+  }
+]
+
+assessment = api.register_payment(
+  installation_id: 'installation-id',
+  account_id: 'account-id',
+  external_id: 'external-id',
+  addresses: addresses,
+  payment_value: payment_value,
+  payment_methods: payment_methods
+)
+
+# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+```
+
 ### Registering a Feedback
 
 This method registers a feedback event for the given identifiers (optional arguments), returning true when success.

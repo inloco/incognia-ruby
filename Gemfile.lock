@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    incognia_api (0.5.0)
+    incognia_api (0.5.1)
       faraday (~> 1.10)
       faraday_middleware (~> 1.2)
 
@@ -81,4 +81,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.7
+   2.4.13

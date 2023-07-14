@@ -9,6 +9,9 @@ module APISpecHelpers
     rspec.let(:unknown_login_fixture) do
       File.new("spec/fixtures/login-unknown.json").read
     end
+    rspec.let(:unknown_payment_fixture) do 
+      File.new("spec/fixtures/payment-unknown.json").read
+    end
     rspec.let(:missing_required_params_fixture) do
       File.new("spec/fixtures/missing-required-params.json").read
     end
@@ -82,6 +85,16 @@ module APISpecHelpers
         status: 200,
         body: unknown_login_fixture,
         headers: { 'Content-Type' => 'application/json' })
+  end
+
+  def stub_payment_request
+    stub_request(
+      :post, "https://api.incognia.com/api/v2/authentication/transactions"
+    ).with(body: hash_including(type: 'payment')).
+    to_return(
+      status: 200,
+      body: unknown_payment_fixture,
+      headers: { 'Content-Type' => 'application/json' })
   end
 
   def stub_register_feedback_request

@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.5.1] - 2023-07-13
+
+- Allow registering payments
+
 ## [0.5.0] - 2023-04-20
 
 - Specify dependencies version
