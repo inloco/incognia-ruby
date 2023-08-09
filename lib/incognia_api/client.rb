@@ -26,6 +26,12 @@ module Incognia
     def request(method, endpoint = nil, data = nil, headers = {})
       json_data = JSON.generate(data) if data
 
+      user_agent_header = "incognia-ruby/#{Incognia::VERSION} " + 
+                          "({#{Util::OS_HOST}}) {#{Util::OS_ARCH}} " +
+                          "Ruby/#{Util::LANGUAGE_VERSION}"
+
+      headers.merge!('User-Agent' => user_agent_header)
+
       connection.send(method, endpoint, json_data, headers) do |r|
         r.headers[Faraday::Request::Authorization::KEY] ||= Faraday::Request
           .lookup_middleware(:authorization)

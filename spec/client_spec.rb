@@ -51,6 +51,32 @@ module Incognia
           expect(stub).to have_been_made.once
       end
 
+      it "injects User-Agent header" do
+        user_agent_header = { 'User-Agent' => "incognia-ruby/#{Incognia::VERSION} " +
+                                              "({#{Util::OS_HOST}}) " +
+                                              "{#{Util::OS_ARCH}} " +
+                                              "Ruby/#{Util::LANGUAGE_VERSION}" }
+
+        stub_token_request
+        stub = stub_request(:post, test_endpoint)
+          .with(
+            body: sample_json,
+            headers: user_agent_header
+          ).to_return(
+            status: 200,
+            body: sample_json,
+            headers: { 'Content-Type' => 'application/json' }
+          )
+
+        subject.request(
+          :post,
+          "v2/endpoint",
+          { foo: :bar }
+        )
+
+        expect(stub).to have_been_made.once
+      end
+
       context "when passing an Authorization header" do
         it  "overrides default header" do
           stub = stub_request(:post, test_endpoint).
