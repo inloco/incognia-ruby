@@ -52,10 +52,10 @@ module Incognia
       end
 
       it "injects User-Agent header" do
-        user_agent_header = { 'User-Agent' => "incognia-ruby/#{Incognia::VERSION} " +
-                                              "({#{Util::OS_HOST}}) " +
-                                              "{#{Util::OS_ARCH}} " +
-                                              "Ruby/#{Util::LANGUAGE_VERSION}" }
+        user_agent_header = { 'User-Agent' => "incognia-ruby/#{Incognia::VERSION} " \
+                              "({#{RbConfig::CONFIG['host']}}) " \
+                              "{#{RbConfig::CONFIG['arch']}} " \
+                              "Ruby/#{RbConfig::CONFIG['ruby_version']}" }
 
         stub_token_request
         stub = stub_request(:post, test_endpoint)

@@ -1,9 +1,5 @@
 module Incognia
   module Util
-    OS_HOST = RbConfig::CONFIG['host']
-    OS_ARCH = RbConfig::CONFIG['arch']
-    LANGUAGE_VERSION = RbConfig::CONFIG['ruby_version']
-
     def self.symbolize_names(object)
       case object
       when Hash

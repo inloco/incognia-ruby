@@ -14,7 +14,12 @@ module Incognia
       @client_secret = client_secret
       @host = host
 
-      @connection = Faraday.new(host) do |faraday|
+      headers = { 'User-Agent' => "incognia-ruby/#{Incognia::VERSION} " \
+                          "({#{RbConfig::CONFIG['host']}}) " \
+                          "{#{RbConfig::CONFIG['arch']}} " \
+                          "Ruby/#{RbConfig::CONFIG['ruby_version']}" }
+
+      @connection = Faraday.new(host, headers: headers) do |faraday|
         faraday.request :json
         faraday.response :json, content_type: /\bjson$/
         faraday.response :raise_error
@@ -25,12 +30,6 @@ module Incognia
 
     def request(method, endpoint = nil, data = nil, headers = {})
       json_data = JSON.generate(data) if data
-
-      user_agent_header = "incognia-ruby/#{Incognia::VERSION} " + 
-                          "({#{Util::OS_HOST}}) {#{Util::OS_ARCH}} " +
-                          "Ruby/#{Util::LANGUAGE_VERSION}"
-
-      headers.merge!('User-Agent' => user_agent_header)
 
       connection.send(method, endpoint, json_data, headers) do |r|
         r.headers[Faraday::Request::Authorization::KEY] ||= Faraday::Request
