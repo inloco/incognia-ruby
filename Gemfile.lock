@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    incognia_api (0.5.1)
+    incognia_api (0.5.2)
       faraday (~> 1.10)
       faraday_middleware (~> 1.2)
 
