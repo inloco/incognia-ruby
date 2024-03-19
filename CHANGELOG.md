@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.5.4] - 2024-03-19
+
+- Allow registering feedback with expires_at parameter 
+
 ## [0.5.1] - 2023-07-13
 
 - Allow registering payments

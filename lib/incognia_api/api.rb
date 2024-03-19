@@ -15,7 +15,7 @@ module Incognia
                                host: "https://api.incognia.com/api")
     end
 
-   def register_signup(installation_id:, address: nil, **opts)
+    def register_signup(installation_id:, address: nil, **opts)
       params = { installation_id: installation_id }
       params.merge!(opts)
       params.merge!(address&.to_hash) if address
@@ -38,13 +38,13 @@ module Incognia
       SignupAssessment.from_hash(response.body) if response.success?
     end
 
-   def register_login(installation_id:, account_id:, **opts)
-     params = {
-       type: :login,
-       installation_id: installation_id,
-       account_id: account_id,
-     }
-     params.merge!(opts)
+    def register_login(installation_id:, account_id:, **opts)
+      params = {
+        type: :login,
+        installation_id: installation_id,
+        account_id: account_id,
+      }
+      params.merge!(opts)
 
       response = connection.request(
         :post,
@@ -55,10 +55,11 @@ module Incognia
       LoginAssessment.from_hash(response.body) if response.success?
     end
 
-    def register_feedback(event: , timestamp: nil, **ids)
+    def register_feedback(event:, timestamp: nil, expires_at: nil, **ids)
       timestamp = timestamp.strftime('%s%L') if timestamp.respond_to? :strftime
+      expires_at = expires_at.strftime('%FT%TZ') if expires_at.respond_to? :strftime
 
-      params = { event: event, timestamp: timestamp&.to_i }.compact
+      params = { event: event, timestamp: timestamp&.to_i, expires_at: expires_at }.compact
       params.merge!(ids)
 
       response = connection.request(

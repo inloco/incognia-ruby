@@ -357,6 +357,7 @@ module Incognia
     describe "#register_feedback" do
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
       let(:timestamp) { 1655749693000 }
+      let(:expires_at) { '2024-03-13T10:12:01Z' }
 
       before { stub_token_request }
 
@@ -368,16 +369,16 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with event and timestamp" do
+        it "hits the endpoint with event, timestamp and expires_at" do
           stub = stub_register_feedback_request
           stub.with(
-            body: { event: event, timestamp: timestamp },
+            body: { event: event, timestamp: timestamp, expires_at: expires_at },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_feedback(event: event, timestamp: timestamp)
+          api.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at)
 
           expect(stub).to have_been_made.once
         end
@@ -431,19 +432,68 @@ module Incognia
           end
         end
 
+        context "when receiving expires_at as a Time" do
+          let(:expires_at) { Time.now }
+
+          it "hits the endpoint with expires_at in RFC3339" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event, expires_at: expires_at.strftime('%FT%TZ') },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            api.register_feedback(event: event, expires_at: expires_at)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        context "when receiving expires_at as a DateTime" do
+          let(:expires_at) { DateTime.now }
+
+          it "hits the endpoint with expires_at in RFC3339" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event, expires_at: expires_at.strftime('%FT%TZ') },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            api.register_feedback(event: event, expires_at: expires_at)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        context "when not receiving expires_at" do
+          it "hits the endpoint without expires_at" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            api.register_feedback(event: event)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
         context "when receiving ids" do
           shared_examples_for "receiving ids" do |id_name|
             let(:id) { SecureRandom.uuid }
 
             it "hits the endpoint with #{id_name}" do
               stub = stub_register_feedback_request.with(
-                body: { event: event, timestamp: timestamp, id_name => id },
+                body: { event: event, timestamp: timestamp, expires_at: expires_at, id_name => id },
                 headers: {
                   'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
                 }
               )
 
-              api.register_feedback(event: event, timestamp: timestamp, id_name => id)
+              api.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at, id_name => id)
 
               expect(stub).to have_been_made.once
             end
@@ -455,6 +505,7 @@ module Incognia
           it_behaves_like 'receiving ids', :signup_id
           it_behaves_like 'receiving ids', :login_id
           it_behaves_like 'receiving ids', :payment_id
+          it_behaves_like 'receiving ids', :session_token
         end
       end
     end
