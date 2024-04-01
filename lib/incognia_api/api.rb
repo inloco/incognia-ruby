@@ -57,7 +57,7 @@ module Incognia
 
     def register_feedback(event:, timestamp: nil, expires_at: nil, **ids)
       timestamp = timestamp.strftime('%s%L') if timestamp.respond_to? :strftime
-      expires_at = expires_at.strftime('%FT%TZ') if expires_at.respond_to? :strftime
+      expires_at = expires_at.to_datetime.rfc3339 if expires_at.respond_to? :to_datetime
 
       params = { event: event, timestamp: timestamp&.to_i, expires_at: expires_at }.compact
       params.merge!(ids)

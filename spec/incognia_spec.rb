@@ -437,7 +437,7 @@ module Incognia
 
           it "hits the endpoint with expires_at in RFC3339" do
             stub = stub_register_feedback_request.with(
-              body: { event: event, expires_at: expires_at.strftime('%FT%TZ') },
+              body: { event: event, expires_at: expires_at.to_datetime.rfc3339 },
               headers: {
                 'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
               }
@@ -454,7 +454,7 @@ module Incognia
 
           it "hits the endpoint with expires_at in RFC3339" do
             stub = stub_register_feedback_request.with(
-              body: { event: event, expires_at: expires_at.strftime('%FT%TZ') },
+              body: { event: event, expires_at: expires_at.to_datetime.rfc3339 },
               headers: {
                 'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
               }
