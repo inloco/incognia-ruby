@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.5.5] - 2024-04-01
+
+- Fix datetime parcer to RFC3339 format
+
 ## [0.5.4] - 2024-03-19
 
 - Allow registering feedback with expires_at parameter 
