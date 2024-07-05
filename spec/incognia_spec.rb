@@ -157,42 +157,6 @@ module Incognia
 
     end
 
-    describe "#get_signup_assessment" do
-      let(:signup_id) { 'id' }
-
-      it "when successful returns the resource" do
-        stub_token_request
-        stub_get_signup_request(signup_id: signup_id)
-
-        signup = api.get_signup_assessment(signup_id: signup_id)
-
-        expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
-        expect(signup.id).
-          to eql expected[:id]
-        expect(signup.risk_assessment).
-          to eql expected[:risk_assessment]
-        expect_evidences_to_match(signup, expected)
-      end
-
-      context "HTTP request" do
-        it "hits the endpoint with signup id at URL" do
-          stub_token_request
-
-          stub = stub_get_signup_request(signup_id: signup_id)
-          stub.with(
-            headers: {
-              'Authorization' => /Bearer.*/
-            }
-          )
-
-          api.get_signup_assessment(signup_id: signup_id)
-
-          expect(stub).to have_been_made.once
-        end
-      end
-
-    end
-
     describe "#register_login" do
       let(:installation_id) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }

@@ -9,7 +9,7 @@ module APISpecHelpers
     rspec.let(:unknown_login_fixture) do
       File.new("spec/fixtures/login-unknown.json").read
     end
-    rspec.let(:unknown_payment_fixture) do 
+    rspec.let(:unknown_payment_fixture) do
       File.new("spec/fixtures/payment-unknown.json").read
     end
     rspec.let(:missing_required_params_fixture) do
@@ -62,17 +62,6 @@ module APISpecHelpers
     stub_request(:post, "https://api.incognia.com/api/v2/onboarding/signups").
       to_return(
         status: 500,
-        headers: { 'Content-Type' => 'application/json' })
-  end
-
-  def stub_get_signup_request(signup_id:)
-    json_body = JSON.parse(unknown_signup_fixture, symbolize_names: true)
-    json_body.merge(id: signup_id)
-
-    stub_request(:get, "https://api.incognia.com/api/v2/onboarding/signups/#{signup_id}").
-      to_return(
-        status: 200,
-        body: json_body.to_json,
         headers: { 'Content-Type' => 'application/json' })
   end
 
