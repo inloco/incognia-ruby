@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.0.0] - 2024-07-05
+
+- Remove #get_signup_assessment, because the endpoint was discontinued
+
 ## [0.5.5] - 2024-04-01
 
 - Fix datetime parcer to RFC3339 format

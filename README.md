@@ -80,17 +80,6 @@ assessment = api.register_signup(
 # => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
 ```
 
-### Getting a Signup
-
-This method allows you to query the latest assessment for a given signup event, returning signup assessment, containing the risk assessment and supporting evidence:
-
-```ruby
-assessment = api.get_signup_assessment(signup_id: "95a9fc56-f65e-436b-a87f-a1338043678f")
-
-# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="..", evidence=...>
-
-```
-
 ### Registering a Login
 
 This method registers a new login for the given installation and account, returning a login assessment, containing the risk assessment and supporting evidence:
