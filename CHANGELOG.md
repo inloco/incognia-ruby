@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.1.0] - 2024-07-24
+
+- Add support to passing request_token and occurred_at to #register_feedback
+
 ## [1.0.0] - 2024-07-05
 
 - Remove #get_signup_assessment, because the endpoint was discontinued
