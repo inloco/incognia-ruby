@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [2.0.0] - 2024-07-24
+
+- Remove support to passing timestamp on #register_feedback
+
 ## [1.1.0] - 2024-07-24
 
 - Add support to passing request_token and occurred_at to #register_feedback

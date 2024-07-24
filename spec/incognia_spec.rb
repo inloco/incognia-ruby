@@ -320,80 +320,31 @@ module Incognia
 
     describe "#register_feedback" do
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
-      let(:timestamp) { 1655749693000 }
-      let(:expires_at) { '2024-03-13T10:12:01Z' }
+      let(:occurred_at) { '2024-03-13T10:12:01Z' }
+      let(:expires_at) { '2024-03-13T10:12:02Z' }
 
       before { stub_token_request }
 
       it "when successful returns true" do
         stub_register_feedback_request
 
-        feedback_registered = api.register_feedback(event: event, timestamp: timestamp)
+        feedback_registered = api.register_feedback(event: event)
         expect(feedback_registered).to be(true)
       end
 
       context "HTTP request" do
-        it "hits the endpoint with event, timestamp and expires_at" do
+        it "hits the endpoint with event, occurred_at and expires_at" do
           stub = stub_register_feedback_request
           stub.with(
-            body: { event: event, timestamp: timestamp, expires_at: expires_at },
+            body: { event: event, occurred_at: occurred_at, expires_at: expires_at },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at)
+          api.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at)
 
           expect(stub).to have_been_made.once
-        end
-
-        context "when receiving timestamp as a Time" do
-          let(:timestamp) { Time.now }
-
-          it "hits the endpoint with timestamp in milliseconds" do
-            stub = stub_register_feedback_request.with(
-              body: { event: event, timestamp: timestamp.strftime('%s%L').to_i },
-              headers: {
-                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-              }
-            )
-
-            api.register_feedback(event: event, timestamp: timestamp)
-
-            expect(stub).to have_been_made.once
-          end
-        end
-
-        context "when receiving timestamp as a DateTime" do
-          let(:timestamp) { DateTime.now }
-
-          it "hits the endpoint with timestamp in milliseconds" do
-            stub = stub_register_feedback_request.with(
-              body: { event: event, timestamp: timestamp.strftime('%s%L').to_i },
-              headers: {
-                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-              }
-            )
-
-            api.register_feedback(event: event, timestamp: timestamp)
-
-            expect(stub).to have_been_made.once
-          end
-        end
-
-        context "when not receiving timestamp" do
-          it "hits the endpoint without timestamp" do
-            stub = stub_register_feedback_request.with(
-              body: { event: event },
-              headers: {
-                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-              }
-            )
-
-            api.register_feedback(event: event)
-
-            expect(stub).to have_been_made.once
-          end
         end
 
         context "when receiving occurred_at as a Time" do
@@ -485,13 +436,13 @@ module Incognia
 
             it "hits the endpoint with #{id_name}" do
               stub = stub_register_feedback_request.with(
-                body: { event: event, timestamp: timestamp, expires_at: expires_at, id_name => id },
+                body: { event: event, occurred_at: occurred_at, expires_at: expires_at, id_name => id },
                 headers: {
                   'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
                 }
               )
 
-              api.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at, id_name => id)
+              api.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at, id_name => id)
 
               expect(stub).to have_been_made.once
             end
