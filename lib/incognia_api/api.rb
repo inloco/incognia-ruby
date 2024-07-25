@@ -46,11 +46,16 @@ module Incognia
       LoginAssessment.from_hash(response.body) if response.success?
     end
 
-    def register_feedback(event:, timestamp: nil, expires_at: nil, **ids)
+    def register_feedback(event:, occurred_at: nil, expires_at: nil, timestamp: nil, **ids)
+      if !timestamp.nil?
+        warn("Deprecation warning: use occurred_at instead of timestamp")
+      end
+
       timestamp = timestamp.strftime('%s%L') if timestamp.respond_to? :strftime
+      occurred_at = occurred_at.to_datetime.rfc3339 if occurred_at.respond_to? :to_datetime
       expires_at = expires_at.to_datetime.rfc3339 if expires_at.respond_to? :to_datetime
 
-      params = { event: event, timestamp: timestamp&.to_i, expires_at: expires_at }.compact
+      params = { event: event, timestamp: timestamp&.to_i, occurred_at: occurred_at, expires_at: expires_at }.compact
       params.merge!(ids)
 
       response = connection.request(

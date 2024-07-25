@@ -202,12 +202,14 @@ The `expires_at` argument should be a _Time_, _DateTime_ or an date in **RFC 333
 
 
 ```ruby
-account_id = "cdb2cfbb-8ad8-4668-b276-5fff9bbfdc96"
-timestamp = DateTime.parse('2022-06-20 23:29:00 UTC-3')
+installation_id = 'installation-id'
+account_id = 'account-id'
+occurred_at = DateTime.parse('2024-07-22T15:20:00Z')
 
 success = api.register_feedback(
-  event: Incognia::Constants::FeedbackEvent::IDENTITY_FRAUD,
-  timestamp: timestamp,
+  event: Incognia::Constants::FeedbackEvent::ACCOUNT_TAKEOVER,
+  occurred_at: occurred_at,
+  installation_id: installation_id,
   account_id: account_id
 )
 
@@ -219,9 +221,9 @@ For custom fraud, set the value of `event` with the corresponding code:
 ```ruby
 success = api.register_feedback(
   event: 'custom_fraud_name',
-  timestamp: timestamp,
-  account_id: account_id,
-  installation_id: installation_id
+  occurred_at: occurred_at,
+  installation_id: installation_id,
+  account_id: account_id
 )
 
 # => true
