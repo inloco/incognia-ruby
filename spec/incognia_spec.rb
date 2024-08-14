@@ -41,13 +41,13 @@ module Incognia
       let(:structured_address) { Address.new(structured: structured_format ) }
       let(:address) { Address.new(line: line_format) }
       let(:coordinates_address) { Address.new(coordinates: coordinates_format) }
-      let(:installation_id) { SecureRandom.uuid }
+      let(:request_token) { SecureRandom.uuid }
 
       it "when successful returns the resource" do
         stub_token_request
         stub_signup_request
 
-        signup = api.register_signup(installation_id: installation_id, address: address)
+        signup = api.register_signup(request_token: request_token, address: address)
 
         expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
         expect(signup.id).
@@ -58,66 +58,66 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with installation_id" do
+        it "hits the endpoint with request_token" do
           stub_token_request
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: installation_id },
+            body: { request_token: request_token },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: installation_id)
+          api.register_signup(request_token: request_token)
 
           expect(stub).to have_been_made.once
         end
 
-        it "hits the endpoint with installation_id and address_line" do
+        it "hits the endpoint with request_token and address_line" do
           stub_token_request
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: installation_id, address_line: line_format },
+            body: { request_token: request_token, address_line: line_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: installation_id, address: address)
+          api.register_signup(request_token: request_token, address: address)
 
           expect(stub).to have_been_made.once
         end
 
-        it "hits the endpoint with installation_id and structured_address" do
+        it "hits the endpoint with request_token and structured_address" do
           stub_token_request
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: installation_id, structured_address: structured_format },
+            body: { request_token: request_token, structured_address: structured_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: installation_id, address: structured_address)
+          api.register_signup(request_token: request_token, address: structured_address)
 
           expect(stub).to have_been_made.once
         end
 
-        it "hits the endpoint with installation_id and coordinates" do
+        it "hits the endpoint with request_token and coordinates" do
           stub_token_request
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: installation_id, address_coordinates: coordinates_format },
+            body: { request_token: request_token, address_coordinates: coordinates_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: installation_id, address: coordinates_address)
+          api.register_signup(request_token: request_token, address: coordinates_address)
 
           expect(stub).to have_been_made.once
         end
@@ -128,14 +128,14 @@ module Incognia
               stub_token_request
 
               stub = stub_signup_request.with(
-                body: { installation_id: installation_id }.merge(opts),
+                body: { request_token: request_token }.merge(opts),
                 headers: {
                   'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
                 }
               )
 
-              login = api.register_signup(
-                installation_id: installation_id,
+              api.register_signup(
+                request_token: request_token,
                 **opts
               )
 
@@ -158,7 +158,7 @@ module Incognia
     end
 
     describe "#register_login" do
-      let(:installation_id) { SecureRandom.uuid }
+      let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
 
       it "when successful returns the resource" do
@@ -166,7 +166,7 @@ module Incognia
         stub_login_request
 
         login = api.register_login(
-          installation_id: installation_id,
+          request_token: request_token,
           account_id: account_id
         )
 
@@ -177,21 +177,21 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with installation_id and account_id" do
+        it "hits the endpoint with request_token and account_id" do
           stub_token_request
 
           stub = stub_login_request.with(
             body: {
               type: 'login',
-              installation_id: installation_id, account_id: account_id
+              request_token: request_token, account_id: account_id
             },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          login = api.register_login(
-            installation_id: installation_id,
+          api.register_login(
+            request_token: request_token,
             account_id: account_id
           )
 
@@ -206,16 +206,16 @@ module Incognia
               stub = stub_login_request.with(
                 body: {
                   type: 'login',
-                  installation_id: installation_id,
-                  account_id: account_id,
+                  request_token: request_token,
+                  account_id: account_id
                 }.merge(opts),
                 headers: {
                   'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
                 }
               )
 
-              login = api.register_login(
-                installation_id: installation_id,
+              api.register_login(
+                request_token: request_token,
                 account_id: account_id,
                 **opts
               )
@@ -239,7 +239,7 @@ module Incognia
     end
 
     describe "#register_payment" do
-      let(:installation_id) { SecureRandom.uuid }
+      let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
 
       it "when successful returns the resource" do
@@ -247,7 +247,7 @@ module Incognia
         stub_payment_request
 
         payment = api.register_payment(
-          installation_id: installation_id,
+          request_token: request_token,
           account_id: account_id
         )
 
@@ -258,21 +258,21 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with installation_id and account_id" do
+        it "hits the endpoint with request_token and account_id" do
           stub_token_request
 
           stub = stub_payment_request.with(
             body: {
               type: 'payment',
-              installation_id: installation_id, account_id: account_id
+              request_token: request_token, account_id: account_id
             },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          payment = api.register_payment(
-            installation_id: installation_id,
+          api.register_payment(
+            request_token: request_token,
             account_id: account_id
           )
 
@@ -287,7 +287,7 @@ module Incognia
               stub = stub_payment_request.with(
                 body: {
                   type: 'payment',
-                  installation_id: installation_id,
+                  request_token: request_token,
                   account_id: account_id
                 }.merge(opts),
                 headers: {
@@ -295,8 +295,8 @@ module Incognia
                 }
               )
 
-              payment = api.register_payment(
-                installation_id: installation_id,
+              api.register_payment(
+                request_token: request_token,
                 account_id: account_id,
                 **opts
               )
@@ -505,7 +505,7 @@ module Incognia
             end
           end
 
-          it_behaves_like 'receiving ids', :installation_id
+          it_behaves_like 'receiving ids', :request_token
           it_behaves_like 'receiving ids', :account_id
           it_behaves_like 'receiving ids', :external_id
           it_behaves_like 'receiving ids', :signup_id
