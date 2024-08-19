@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.2.0] - 2024-08-26
+
+- Removes the requirement to send installation id to register signup, login and payment
+
 ## [1.1.0] - 2024-07-24
 
 - Add support to passing request_token and occurred_at to #register_feedback
