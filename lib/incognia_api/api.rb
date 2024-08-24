@@ -15,8 +15,9 @@ module Incognia
                                host: "https://api.incognia.com/api")
     end
 
-    def register_signup(address: nil, **opts)
+    def register_signup(request_token: nil, address: nil, **opts)
       params = {}
+      params.merge!({ request_token: request_token }) if request_token
       params.merge!(opts)
       params.merge!(address&.to_hash) if address
 
@@ -29,11 +30,12 @@ module Incognia
       SignupAssessment.from_hash(response.body) if response.success?
     end
 
-    def register_login(account_id:, **opts)
+    def register_login(account_id:, request_token: nil, **opts)
       params = {
         type: :login,
         account_id: account_id
       }
+      params.merge!({ request_token: request_token }) if request_token
       params.merge!(opts)
 
       response = connection.request(
@@ -66,8 +68,9 @@ module Incognia
       response.success?
     end
 
-    def register_payment(account_id:, **opts)
+    def register_payment(account_id:, request_token: nil, **opts)
       params = { account_id: account_id, type: :payment }
+      params.merge!({ request_token: request_token }) if request_token
       params.merge!(opts)
 
       response = connection.request(

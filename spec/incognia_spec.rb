@@ -58,27 +58,34 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with request_token" do
-          stub_token_request
+        shared_examples_for 'receiving one of the required tokens' do |token_name|
+          let(:token_value) { SecureRandom.uuid }
 
-          stub = stub_signup_request
-          stub.with(
-            body: { request_token: request_token },
-            headers: {
-              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-            }
-          )
+          it "hits the endpoint with #{token_name}" do
+            stub_token_request
 
-          api.register_signup(request_token: request_token)
+            stub = stub_signup_request
+            stub.with(
+              body: { token_name => token_value },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
 
-          expect(stub).to have_been_made.once
+            api.register_signup(token_name => token_value)
+
+            expect(stub).to have_been_made.once
+          end
         end
+
+        it_behaves_like 'receiving one of the required tokens', :request_token
+        it_behaves_like 'receiving one of the required tokens', :installation_id
+        it_behaves_like 'receiving one of the required tokens', :session_token
 
         it "hits the endpoint with request_token and address_line" do
           stub_token_request
 
-          stub = stub_signup_request
-          stub.with(
+          stub = stub_signup_request.with(
             body: { request_token: request_token, address_line: line_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
@@ -154,7 +161,6 @@ module Incognia
           end
         end
       end
-
     end
 
     describe "#register_login" do
@@ -177,26 +183,35 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with request_token and account_id" do
-          stub_token_request
+        shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
+          let(:token_value) { SecureRandom.uuid }
 
-          stub = stub_login_request.with(
-            body: {
-              type: 'login',
-              request_token: request_token, account_id: account_id
-            },
-            headers: {
-              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-            }
-          )
+          it "hits the endpoint with #{token_name} and account_id" do
+            stub_token_request
 
-          api.register_login(
-            request_token: request_token,
-            account_id: account_id
-          )
+            stub = stub_login_request.with(
+              body: {
+                type: 'login',
+                account_id: account_id,
+                token_name => token_value
+              },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
 
-          expect(stub).to have_been_made.once
+            api.register_login(
+              account_id: account_id,
+              token_name => token_value
+            )
+
+            expect(stub).to have_been_made.once
+          end
         end
+
+        it_behaves_like 'receiving one of the required tokens with account_id', :request_token
+        it_behaves_like 'receiving one of the required tokens with account_id', :installation_id
+        it_behaves_like 'receiving one of the required tokens with account_id', :session_token
 
         context 'when receiving any other optional arguments' do
           shared_examples_for 'receiving optional args' do |optional_arguments|
@@ -258,26 +273,35 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with request_token and account_id" do
-          stub_token_request
+        shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
+          let(:token_value) { SecureRandom.uuid }
 
-          stub = stub_payment_request.with(
-            body: {
-              type: 'payment',
-              request_token: request_token, account_id: account_id
-            },
-            headers: {
-              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-            }
-          )
+          it "hits the endpoint with #{token_name} and account_id" do
+            stub_token_request
 
-          api.register_payment(
-            request_token: request_token,
-            account_id: account_id
-          )
+            stub = stub_payment_request.with(
+              body: {
+                type: 'payment',
+                account_id: account_id,
+                token_name => token_value
+              },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
 
-          expect(stub).to have_been_made.once
+            api.register_payment(
+              account_id: account_id,
+              token_name => token_value
+            )
+
+            expect(stub).to have_been_made.once
+          end
         end
+
+        it_behaves_like 'receiving one of the required tokens with account_id', :request_token
+        it_behaves_like 'receiving one of the required tokens with account_id', :installation_id
+        it_behaves_like 'receiving one of the required tokens with account_id', :session_token
 
         context 'when receiving any other optional arguments' do
           shared_examples_for 'receiving optional args' do |optional_arguments|
@@ -305,7 +329,7 @@ module Incognia
             end
           end
 
-          it_behaves_like 'receiving optional args', 'external_id', 'payment request', 'aaa' do
+          it_behaves_like 'receiving optional args', 'external_id' do
             let(:opts) { { external_id: 'external-id' } }
           end
           it_behaves_like 'receiving optional args', 'payment_value' do
