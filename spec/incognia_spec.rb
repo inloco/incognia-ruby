@@ -303,6 +303,34 @@ module Incognia
         it_behaves_like 'receiving one of the required tokens with account_id', :installation_id
         it_behaves_like 'receiving one of the required tokens with account_id', :session_token
 
+        shared_examples_for 'receiving one of the required tokens without account_id' do |token_name|
+          let(:token_value) { SecureRandom.uuid }
+
+          it "hits the endpoint with #{token_name}" do
+            stub_token_request
+
+            stub = stub_payment_request.with(
+              body: {
+                type: 'payment',
+                token_name => token_value
+              },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            api.register_payment(
+              token_name => token_value
+            )
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        it_behaves_like 'receiving one of the required tokens without account_id', :request_token
+        it_behaves_like 'receiving one of the required tokens without account_id', :installation_id
+        it_behaves_like 'receiving one of the required tokens without account_id', :session_token
+
         context 'when receiving any other optional arguments' do
           shared_examples_for 'receiving optional args' do |optional_arguments|
             it "hits the endpoint also with #{optional_arguments}" do

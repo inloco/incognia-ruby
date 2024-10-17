@@ -67,7 +67,7 @@ module Incognia
       response.success?
     end
 
-    def register_payment(account_id:, request_token: nil, **opts)
+    def register_payment(account_id: nil, request_token: nil, **opts)
       params = {
         type: :payment,
         account_id: account_id,
