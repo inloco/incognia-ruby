@@ -2,6 +2,28 @@
 require 'securerandom'
 
 module Incognia
+  RSpec.describe '.configure' do
+    it 'sets configuration on Configuration.instance' do
+      config = {
+        client_id: SecureRandom.uuid,
+        client_secret: SecureRandom.uuid,
+        host: 'https://api.incognia.com/api'
+      }
+
+      Incognia.configure(**config)
+
+      expect(Configuration.instance.client_id).to eq(config[:client_id])
+      expect(Configuration.instance.client_secret).to eq(config[:client_secret])
+      expect(Configuration.instance.host).to eq(config[:host])
+    end
+  end
+
+  RSpec.describe '.config' do
+    it 'returns the instance of Configuration' do
+      expect(Incognia.config).to eq(Configuration.instance)
+    end
+  end
+
   RSpec.describe Incognia::Api do
     subject(:api) do
       Api.new(client_id: 'client_id', client_secret: 'client_secret')
