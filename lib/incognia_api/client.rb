@@ -30,8 +30,6 @@ module Incognia
       @credentials
     end
 
-    protected
-
     def connection
       return @connection if @connection
 
@@ -48,6 +46,8 @@ module Incognia
         faraday.adapter Faraday.default_adapter
       end
     end
+
+    protected
 
     def request_credentials
       basic_auth = Faraday::Request

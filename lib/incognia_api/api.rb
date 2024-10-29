@@ -19,6 +19,11 @@ module Incognia
     def register_login(**args); self.class.register_login(**args) end
     def register_feedback(**args); self.class.register_feedback(**args) end
     def register_payment(**args); self.class.register_payment(**args) end
+    def connection
+      warn("Deprecation warning: #connection and .connection are deprecated and will be private.")
+
+      self.class.connection
+    end
 
     class << self
       def register_signup(request_token: nil, address: nil, **opts)
@@ -89,8 +94,6 @@ module Incognia
 
         PaymentAssessment.from_hash(response.body) if response.success?
       end
-
-      private
 
       def connection
         Client.instance

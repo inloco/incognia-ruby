@@ -638,6 +638,20 @@ module Incognia
           account_id: 'account_id'
         }
       end
+
+      describe '#connection' do
+        it 'calls Incognia.connection' do
+          expect(described_class).to receive(:connection)
+
+          api_instance.connection
+        end
+
+        it 'warns about deprecation of #connection and .connection' do
+          expect(api_instance).to receive(:warn).with("Deprecation warning: #connection and .connection are deprecated and will be private.")
+
+          api_instance.connection
+        end
+      end
     end
   end
 end
