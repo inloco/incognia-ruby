@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.3.0] - 2024-10-30
+
+- Add support for general configuration and use Incognia::Api as a static class
+
 ## [1.2.0] - 2024-08-26
 
 - Removes the requirement to send installation id to register signup, login and payment
