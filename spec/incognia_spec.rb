@@ -2,12 +2,38 @@
 require 'securerandom'
 
 module Incognia
+  RSpec.describe '.configure' do
+    it 'sets configuration on Configuration.instance' do
+      config = {
+        client_id: SecureRandom.uuid,
+        client_secret: SecureRandom.uuid,
+        host: 'https://api.incognia.com/api'
+      }
+
+      Incognia.configure(**config)
+
+      expect(Configuration.instance.client_id).to eq(config[:client_id])
+      expect(Configuration.instance.client_secret).to eq(config[:client_secret])
+      expect(Configuration.instance.host).to eq(config[:host])
+    end
+  end
+
+  RSpec.describe '.config' do
+    it 'returns the instance of Configuration' do
+      expect(Incognia.config).to eq(Configuration.instance)
+    end
+  end
+
   RSpec.describe Incognia::Api do
-    subject(:api) do
-      Api.new(client_id: 'client_id', client_secret: 'client_secret')
+    before do
+      Incognia.configure(
+        client_id: 'client_id',
+        client_secret: 'client_secret',
+        host: 'https://api.incognia.com/api'
+      )
     end
 
-    describe "#register_signup" do
+    describe ".register_signup" do
       let(:locale) { "en-US" }
       let(:country_name) { "United States of America" }
       let(:country_code) { "US" }
@@ -41,13 +67,13 @@ module Incognia
       let(:structured_address) { Address.new(structured: structured_format ) }
       let(:address) { Address.new(line: line_format) }
       let(:coordinates_address) { Address.new(coordinates: coordinates_format) }
-      let(:installation_id) { SecureRandom.uuid }
+      let(:request_token) { SecureRandom.uuid }
 
       it "when successful returns the resource" do
         stub_token_request
         stub_signup_request
 
-        signup = api.register_signup(installation_id: installation_id, address: address)
+        signup = described_class.register_signup(request_token: request_token, address: address)
 
         expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
         expect(signup.id).
@@ -58,66 +84,73 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with installation_id" do
+        shared_examples_for 'receiving one of the required tokens' do |token_name|
+          let(:token_value) { SecureRandom.uuid }
+
+          it "hits the endpoint with #{token_name}" do
+            stub_token_request
+
+            stub = stub_signup_request
+            stub.with(
+              body: { token_name => token_value },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            described_class.register_signup(token_name => token_value)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        it_behaves_like 'receiving one of the required tokens', :request_token
+        it_behaves_like 'receiving one of the required tokens', :installation_id
+        it_behaves_like 'receiving one of the required tokens', :session_token
+
+        it "hits the endpoint with request_token and address_line" do
           stub_token_request
 
-          stub = stub_signup_request
-          stub.with(
-            body: { installation_id: installation_id },
+          stub = stub_signup_request.with(
+            body: { request_token: request_token, address_line: line_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: installation_id)
+          described_class.register_signup(request_token: request_token, address: address)
 
           expect(stub).to have_been_made.once
         end
 
-        it "hits the endpoint with installation_id and address_line" do
+        it "hits the endpoint with request_token and structured_address" do
           stub_token_request
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: installation_id, address_line: line_format },
+            body: { request_token: request_token, structured_address: structured_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: installation_id, address: address)
+          described_class.register_signup(request_token: request_token, address: structured_address)
 
           expect(stub).to have_been_made.once
         end
 
-        it "hits the endpoint with installation_id and structured_address" do
+        it "hits the endpoint with request_token and coordinates" do
           stub_token_request
 
           stub = stub_signup_request
           stub.with(
-            body: { installation_id: installation_id, structured_address: structured_format },
+            body: { request_token: request_token, address_coordinates: coordinates_format },
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
           )
 
-          api.register_signup(installation_id: installation_id, address: structured_address)
-
-          expect(stub).to have_been_made.once
-        end
-
-        it "hits the endpoint with installation_id and coordinates" do
-          stub_token_request
-
-          stub = stub_signup_request
-          stub.with(
-            body: { installation_id: installation_id, address_coordinates: coordinates_format },
-            headers: {
-              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-            }
-          )
-
-          api.register_signup(installation_id: installation_id, address: coordinates_address)
+          described_class.register_signup(request_token: request_token, address: coordinates_address)
 
           expect(stub).to have_been_made.once
         end
@@ -128,14 +161,14 @@ module Incognia
               stub_token_request
 
               stub = stub_signup_request.with(
-                body: { installation_id: installation_id }.merge(opts),
+                body: { request_token: request_token }.merge(opts),
                 headers: {
                   'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
                 }
               )
 
-              login = api.register_signup(
-                installation_id: installation_id,
+              described_class.register_signup(
+                request_token: request_token,
                 **opts
               )
 
@@ -154,19 +187,18 @@ module Incognia
           end
         end
       end
-
     end
 
-    describe "#register_login" do
-      let(:installation_id) { SecureRandom.uuid }
+    describe ".register_login" do
+      let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
 
       it "when successful returns the resource" do
         stub_token_request
         stub_login_request
 
-        login = api.register_login(
-          installation_id: installation_id,
+        login = described_class.register_login(
+          request_token: request_token,
           account_id: account_id
         )
 
@@ -177,26 +209,35 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with installation_id and account_id" do
-          stub_token_request
+        shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
+          let(:token_value) { SecureRandom.uuid }
 
-          stub = stub_login_request.with(
-            body: {
-              type: 'login',
-              installation_id: installation_id, account_id: account_id
-            },
-            headers: {
-              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-            }
-          )
+          it "hits the endpoint with #{token_name} and account_id" do
+            stub_token_request
 
-          login = api.register_login(
-            installation_id: installation_id,
-            account_id: account_id
-          )
+            stub = stub_login_request.with(
+              body: {
+                type: 'login',
+                account_id: account_id,
+                token_name => token_value
+              },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
 
-          expect(stub).to have_been_made.once
+            described_class.register_login(
+              account_id: account_id,
+              token_name => token_value
+            )
+
+            expect(stub).to have_been_made.once
+          end
         end
+
+        it_behaves_like 'receiving one of the required tokens with account_id', :request_token
+        it_behaves_like 'receiving one of the required tokens with account_id', :installation_id
+        it_behaves_like 'receiving one of the required tokens with account_id', :session_token
 
         context 'when receiving any other optional arguments' do
           shared_examples_for 'receiving optional args' do |optional_arguments|
@@ -206,16 +247,16 @@ module Incognia
               stub = stub_login_request.with(
                 body: {
                   type: 'login',
-                  installation_id: installation_id,
-                  account_id: account_id,
+                  request_token: request_token,
+                  account_id: account_id
                 }.merge(opts),
                 headers: {
                   'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
                 }
               )
 
-              login = api.register_login(
-                installation_id: installation_id,
+              described_class.register_login(
+                request_token: request_token,
                 account_id: account_id,
                 **opts
               )
@@ -238,16 +279,16 @@ module Incognia
 
     end
 
-    describe "#register_payment" do
-      let(:installation_id) { SecureRandom.uuid }
+    describe ".register_payment" do
+      let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
 
       it "when successful returns the resource" do
         stub_token_request
         stub_payment_request
 
-        payment = api.register_payment(
-          installation_id: installation_id,
+        payment = described_class.register_payment(
+          request_token: request_token,
           account_id: account_id
         )
 
@@ -258,26 +299,35 @@ module Incognia
       end
 
       context "HTTP request" do
-        it "hits the endpoint with installation_id and account_id" do
-          stub_token_request
+        shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
+          let(:token_value) { SecureRandom.uuid }
 
-          stub = stub_payment_request.with(
-            body: {
-              type: 'payment',
-              installation_id: installation_id, account_id: account_id
-            },
-            headers: {
-              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-            }
-          )
+          it "hits the endpoint with #{token_name} and account_id" do
+            stub_token_request
 
-          payment = api.register_payment(
-            installation_id: installation_id,
-            account_id: account_id
-          )
+            stub = stub_payment_request.with(
+              body: {
+                type: 'payment',
+                account_id: account_id,
+                token_name => token_value
+              },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
 
-          expect(stub).to have_been_made.once
+            described_class.register_payment(
+              account_id: account_id,
+              token_name => token_value
+            )
+
+            expect(stub).to have_been_made.once
+          end
         end
+
+        it_behaves_like 'receiving one of the required tokens with account_id', :request_token
+        it_behaves_like 'receiving one of the required tokens with account_id', :installation_id
+        it_behaves_like 'receiving one of the required tokens with account_id', :session_token
 
         context 'when receiving any other optional arguments' do
           shared_examples_for 'receiving optional args' do |optional_arguments|
@@ -287,7 +337,7 @@ module Incognia
               stub = stub_payment_request.with(
                 body: {
                   type: 'payment',
-                  installation_id: installation_id,
+                  request_token: request_token,
                   account_id: account_id
                 }.merge(opts),
                 headers: {
@@ -295,8 +345,8 @@ module Incognia
                 }
               )
 
-              payment = api.register_payment(
-                installation_id: installation_id,
+              described_class.register_payment(
+                request_token: request_token,
                 account_id: account_id,
                 **opts
               )
@@ -305,7 +355,7 @@ module Incognia
             end
           end
 
-          it_behaves_like 'receiving optional args', 'external_id', 'payment request', 'aaa' do
+          it_behaves_like 'receiving optional args', 'external_id' do
             let(:opts) { { external_id: 'external-id' } }
           end
           it_behaves_like 'receiving optional args', 'payment_value' do
@@ -318,17 +368,22 @@ module Incognia
       end
     end
 
-    describe "#register_feedback" do
+    describe ".register_feedback" do
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
       let(:occurred_at) { '2024-03-13T10:12:01Z' }
       let(:expires_at) { '2024-03-13T10:12:02Z' }
 
-      before { stub_token_request }
+      before do
+        allow(described_class).to receive(:warn)
+
+        stub_token_request
+      end
+
 
       it "when successful returns true" do
         stub_register_feedback_request
 
-        feedback_registered = api.register_feedback(event: event)
+        feedback_registered = described_class.register_feedback(event: event)
         expect(feedback_registered).to be(true)
       end
 
@@ -342,7 +397,7 @@ module Incognia
             }
           )
 
-          api.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at)
+          described_class.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at)
 
           expect(stub).to have_been_made.once
         end
@@ -358,7 +413,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, occurred_at: occurred_at)
+            described_class.register_feedback(event: event, occurred_at: occurred_at)
 
             expect(stub).to have_been_made.once
           end
@@ -375,7 +430,41 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, occurred_at: occurred_at)
+            described_class.register_feedback(event: event, occurred_at: occurred_at)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        context "when receiving occurred_at as a Time" do
+          let(:occurred_at) { Time.now }
+
+          it "hits the endpoint with expires_at in RFC3339" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event, occurred_at: occurred_at.to_datetime.rfc3339 },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            described_class.register_feedback(event: event, occurred_at: occurred_at)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
+        context "when receiving occurred_at as a DateTime" do
+          let(:occurred_at) { DateTime.now }
+
+          it "hits the endpoint with occurred_at in RFC3339" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event, occurred_at: occurred_at.to_datetime.rfc3339 },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            described_class.register_feedback(event: event, occurred_at: occurred_at)
 
             expect(stub).to have_been_made.once
           end
@@ -392,7 +481,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, expires_at: expires_at)
+            described_class.register_feedback(event: event, expires_at: expires_at)
 
             expect(stub).to have_been_made.once
           end
@@ -409,7 +498,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, expires_at: expires_at)
+            described_class.register_feedback(event: event, expires_at: expires_at)
 
             expect(stub).to have_been_made.once
           end
@@ -424,7 +513,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event)
+            described_class.register_feedback(event: event)
 
             expect(stub).to have_been_made.once
           end
@@ -442,13 +531,13 @@ module Incognia
                 }
               )
 
-              api.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at, id_name => id)
+              described_class.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at, id_name => id)
 
               expect(stub).to have_been_made.once
             end
           end
 
-          it_behaves_like 'receiving ids', :installation_id
+          it_behaves_like 'receiving ids', :request_token
           it_behaves_like 'receiving ids', :account_id
           it_behaves_like 'receiving ids', :external_id
           it_behaves_like 'receiving ids', :signup_id
