@@ -5,27 +5,10 @@ require 'faraday_middleware'
 
 module Incognia
   class Api
-    # business layer: uses the Client.instance to build domain objects
-    # raises missing parameters errors
-
-    def initialize(client_id:, client_secret:)
-      Incognia.configure(client_id: client_id, client_secret: client_secret)
-
-      warn("Deprecation warning: The Incognia::Api instance will be removed. " +
-           "Please set up with `Incognia.configure` and use class methods instead.")
-    end
-
-    def register_signup(**args); self.class.register_signup(**args) end
-    def register_login(**args); self.class.register_login(**args) end
-    def register_feedback(**args); self.class.register_feedback(**args) end
-    def register_payment(**args); self.class.register_payment(**args) end
-    def connection
-      warn("Deprecation warning: #connection and .connection are deprecated and will be private.")
-
-      self.class.connection
-    end
-
     class << self
+      # business layer: uses the Client.instance to build domain objects
+      # raises missing parameters errors
+
       def register_signup(request_token: nil, address: nil, **opts)
         params = { request_token: request_token }.compact
         params.merge!(opts)
