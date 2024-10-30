@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "incognia_api/configuration"
 require_relative "incognia_api/version"
 require_relative "incognia_api/client"
 require_relative "incognia_api/util"
@@ -15,6 +16,14 @@ require_relative "incognia_api/resources/credentials"
 require_relative "incognia_api/constants/feedback_event"
 
 module Incognia
+  def self.configure(**args)
+    config.configure(**args)
+  end
+
+  def self.config
+    Configuration.instance
+  end
+
   class APIError < StandardError
     attr_reader :message, :errors, :status
 

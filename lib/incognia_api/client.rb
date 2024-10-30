@@ -1,32 +1,14 @@
 require "time"
+require "singleton"
 
 module Incognia
   class Client
+    include Singleton
     # TODO:
     # (ok) http/adapter specific code
     # (ok) raises network/authentication errors
     # (ok) handles token refreshing ok
     # future: handles retrying
-    attr_reader :connection
-
-    def initialize(client_id:, client_secret:, host:)
-      @client_id = client_id
-      @client_secret = client_secret
-      @host = host
-
-      headers = { 'User-Agent' => "incognia-ruby/#{Incognia::VERSION} " \
-                          "({#{RbConfig::CONFIG['host']}}) " \
-                          "{#{RbConfig::CONFIG['arch']}} " \
-                          "Ruby/#{RbConfig::CONFIG['ruby_version']}" }
-
-      @connection = Faraday.new(host, headers: headers) do |faraday|
-        faraday.request :json
-        faraday.response :json, content_type: /\bjson$/
-        faraday.response :raise_error
-
-        faraday.adapter Faraday.default_adapter
-      end
-    end
 
     def request(method, endpoint = nil, data = nil, headers = {})
       json_data = JSON.generate(data) if data
@@ -48,12 +30,29 @@ module Incognia
       @credentials
     end
 
+    def connection
+      return @connection if @connection
+
+      headers = { 'User-Agent' => "incognia-ruby/#{Incognia::VERSION} " \
+                          "({#{RbConfig::CONFIG['host']}}) " \
+                          "{#{RbConfig::CONFIG['arch']}} " \
+                          "Ruby/#{RbConfig::CONFIG['ruby_version']}" }
+
+      @connection = Faraday.new(Incognia.config.host, headers: headers) do |faraday|
+        faraday.request :json
+        faraday.response :json, content_type: /\bjson$/
+        faraday.response :raise_error
+
+        faraday.adapter Faraday.default_adapter
+      end
+    end
+
     protected
 
     def request_credentials
       basic_auth = Faraday::Request
         .lookup_middleware(:basic_auth)
-        .header(@client_id, @client_secret)
+        .header(Incognia.config.client_id, Incognia.config.client_secret)
 
       response = connection.send(:post, 'v2/token') do |r|
         r.headers[Faraday::Request::Authorization::KEY] = basic_auth
