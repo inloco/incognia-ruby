@@ -436,6 +436,21 @@ module Incognia
           end
         end
 
+        context "when not receiving occurred_at" do
+          it "hits the endpoint without occurred_at" do
+            stub = stub_register_feedback_request.with(
+              body: { event: event },
+              headers: {
+                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              }
+            )
+
+            described_class.register_feedback(event: event)
+
+            expect(stub).to have_been_made.once
+          end
+        end
+
         context "when receiving expires_at as a Time" do
           let(:expires_at) { Time.now }
 
