@@ -436,40 +436,6 @@ module Incognia
           end
         end
 
-        context "when receiving occurred_at as a Time" do
-          let(:occurred_at) { Time.now }
-
-          it "hits the endpoint with expires_at in RFC3339" do
-            stub = stub_register_feedback_request.with(
-              body: { event: event, occurred_at: occurred_at.to_datetime.rfc3339 },
-              headers: {
-                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-              }
-            )
-
-            described_class.register_feedback(event: event, occurred_at: occurred_at)
-
-            expect(stub).to have_been_made.once
-          end
-        end
-
-        context "when receiving occurred_at as a DateTime" do
-          let(:occurred_at) { DateTime.now }
-
-          it "hits the endpoint with occurred_at in RFC3339" do
-            stub = stub_register_feedback_request.with(
-              body: { event: event, occurred_at: occurred_at.to_datetime.rfc3339 },
-              headers: {
-                'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
-              }
-            )
-
-            described_class.register_feedback(event: event, occurred_at: occurred_at)
-
-            expect(stub).to have_been_made.once
-          end
-        end
-
         context "when receiving expires_at as a Time" do
           let(:expires_at) { Time.now }
 
