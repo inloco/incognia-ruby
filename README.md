@@ -198,7 +198,7 @@ assessment = Incognia::Api.register_payment(
 
 This method registers a feedback event for the given identifiers (optional arguments), returning true when success.
 
-The `timestamp` argument should be a _Time_, _DateTime_ or an _Integer_ being the timestamp in milliseconds.
+The `occurred_at` argument should be a _Time_, _DateTime_ or an date in **RFC 3339** format.
 
 The `expires_at` argument should be a _Time_, _DateTime_ or an date in **RFC 3339** format.
 

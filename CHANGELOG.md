@@ -1,6 +1,12 @@
 ## [Unreleased]
 
-## [1.3.0] - 2024-10-30
+## [2.0.0] - 2024-11-12
+
+- Remove support for instance usage of Incognia::Api
+- Remove invalid feedback types
+- Remove support for sending feedback timestamp
+
+## [1.3.0] - 2024-11-12
 
 - Add support for general configuration and use Incognia::Api as a static class
 
