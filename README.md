@@ -35,16 +35,18 @@ Or install it yourself as:
 
 ### Configuration
 
-Before using the API client, you must initialize it using credentials obtained
-from the [Incognia dashboard]():
+Before using the API client, you must configure it using credentials obtained
+from the [Incognia dashboard](https://dash.incognia.com/):
 
 ```ruby
-api = Incognia::Api.new(client_id: "your-client-id", client_secret:
-"your-client-secret")
+Incognia.configure(client_id: ENV['INCOGNIA_CLIENT_ID'], client_secret: ENV['INCOGNIA_CLIENT_SECRET'])
 
+# Incognia.configure(client_id: "your-client-id", client_secret: "your-client-secret")
 ```
 
-For sandbox credentials, refer to the [API testing guide]().
+For sandbox credentials, refer to the [API testing guide](https://developer.incognia.com/).
+
+:bulb: For Rails applications it's recommended to create an initializer file, for example `config/initializers/incognia.rb`.
 
 
 ### Registering a Signup
@@ -55,7 +57,7 @@ This method registers a new signup for the given request token and address, retu
 address = Incognia::Address.new(line: "West 34th Street, New York City, NY 10001")
 request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 
-assessment = api.register_signup(
+assessment = Incognia::Api.register_signup(
   request_token: request_token,
   address: address
 )
@@ -71,7 +73,7 @@ address = Incognia::Address.new(line: "West 34th Street, New York City, NY 10001
 request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 external_id = "7b02736a-7718-4b83-8982-f68fb6f501fa"
 
-assessment = api.register_signup(
+assessment = Incognia::Api.register_signup(
   request_token: request_token,
   address: address,
   external_id: external_id
@@ -88,7 +90,7 @@ This method registers a new login for the given request token and account, retur
 request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 account_id = 'account-identifier-123'
 
-assessment = api.register_login(
+assessment = Incognia::Api.register_login(
   request_token: request_token,
   account_id: account_id,
 )
@@ -104,7 +106,7 @@ request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 account_id = 'account-identifier-123'
 external_id = 'some-external-identifier'
 
-assessment = api.register_login(
+assessment = Incognia::Api.register_login(
   request_token: request_token,
   account_id: account_id,
   external_id: external_id,
@@ -120,7 +122,7 @@ This method registers a new payment for the given request token and account, ret
 containing the risk assessment and supporting evidence.
 
 ```ruby
-assessment = api.register_payment(
+assessment = Incognia::Api.register_payment(
   request_token: 'request-token',
   account_id: 'account-id'
 )
@@ -180,7 +182,7 @@ payment_methods = [
   }
 ]
 
-assessment = api.register_payment(
+assessment = Incognia::Api.register_payment(
   request_token: 'request-token',
   account_id: 'account-id',
   external_id: 'external-id',
@@ -206,7 +208,7 @@ request_token = 'request-token'
 account_id = 'account-id'
 occurred_at = DateTime.parse('2024-07-22T15:20:00Z')
 
-success = api.register_feedback(
+success = Incognia::Api.register_feedback(
   event: Incognia::Constants::FeedbackEvent::ACCOUNT_TAKEOVER,
   occurred_at: occurred_at,
   request_token: request_token,
@@ -219,7 +221,7 @@ success = api.register_feedback(
 For custom fraud, set the value of `event` with the corresponding code:
 
 ```ruby
-success = api.register_feedback(
+success = Incognia::Api.register_feedback(
   event: 'custom_fraud_name',
   occurred_at: occurred_at,
   request_token: request_token,

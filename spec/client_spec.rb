@@ -5,15 +5,17 @@ module Incognia
     let(:token_fixture) { File.new("spec/fixtures/token.json").read }
     let(:test_endpoint) { "https://api.incognia.com/api/v2/endpoint" }
 
-    subject do
-      described_class.new(
+    subject(:instance) { described_class.instance }
+
+    before do
+      Incognia.configure(
         client_id: 'client_id',
         client_secret: 'client_secret',
         host: 'https://api.incognia.com/api'
       )
     end
 
-    context "#request" do
+    describe "#request" do
       it "makes an HTTP request" do
         stub_token_request
         stub = stub_request(:post, test_endpoint).
@@ -24,7 +26,7 @@ module Incognia
             headers: { 'Content-Type' => 'application/json' }
           )
 
-        subject.request(:post, 'v2/endpoint', { foo: :bar })
+        instance.request(:post, 'v2/endpoint', { foo: :bar })
 
         expect(stub).to have_been_made.once
       end
@@ -42,7 +44,7 @@ module Incognia
             headers: { 'Content-Type' => 'application/json' }
           )
 
-          subject.request(
+          instance.request(
             :post,
             "v2/endpoint",
             { foo: :bar }
@@ -68,7 +70,7 @@ module Incognia
             headers: { 'Content-Type' => 'application/json' }
           )
 
-        subject.request(
+        instance.request(
           :post,
           "v2/endpoint",
           { foo: :bar }
@@ -87,7 +89,7 @@ module Incognia
               headers: { 'Content-Type' => 'application/json' }
             )
 
-          subject.request(
+          instance.request(
             :post,
             'v2/endpoint',
             { foo: :bar },
@@ -108,8 +110,8 @@ module Incognia
             headers: { 'Content-Type' => 'application/json' }
           )
 
-        expect(subject.request(:post, 'v2/endpoint')).to be_success
-        expect(subject.request(:post, 'v2/endpoint').body['foo']).to eq('bar')
+        expect(instance.request(:post, 'v2/endpoint')).to be_success
+        expect(instance.request(:post, 'v2/endpoint').body['foo']).to eq('bar')
       end
 
       context "when receives errors" do
@@ -118,7 +120,7 @@ module Incognia
           stub_signup_request_400(error: :example)
 
           expect {
-            subject.request(:post, "v2/onboarding/signups")
+            instance.request(:post, "v2/onboarding/signups")
           }.to raise_exception APIError, /server responded with status 400/i
         end
 
@@ -127,7 +129,7 @@ module Incognia
           stub_signup_request_500
 
           expect {
-            subject.request(:post, "v2/onboarding/signups")
+            instance.request(:post, "v2/onboarding/signups")
           }.to raise_exception APIError
         end
 
@@ -136,17 +138,19 @@ module Incognia
           stub_request_timeout("v2/onboarding/signups")
 
           expect {
-            subject.request(:post, "v2/onboarding/signups")
+            instance.request(:post, "v2/onboarding/signups")
           }.to raise_exception APIError
         end
       end
     end
 
-    context "#credentials" do
+    describe "#credentials" do
+      before { Singleton.__init__(described_class) }
+
       it "requests an access token from the /token endpoint" do
         stub = stub_token_request
 
-        credentials = subject.credentials
+        credentials = instance.credentials
 
         expect(credentials).to_not be_nil
         expect(stub).to have_been_made.once
@@ -155,17 +159,17 @@ module Incognia
       it "provides the access_token and expires_in" do
         stub_token_request
 
-        credentials = subject.credentials
+        credentials = instance.credentials
 
         expect(credentials.access_token).to be
         expect(credentials.expires_in).to be
         expect(credentials.generated_at).to be
       end
 
-      it "caches the access_token" do
+      it "caches the access_token in any instance" do
         stub = stub_token_request
 
-        2.times { subject.credentials }
+        2.times { described_class.instance.credentials }
 
         expect(stub).to have_been_made.once
       end
@@ -174,8 +178,8 @@ module Incognia
         it "calls the /token endpoint again" do
           stub = stub_token_request
 
-          subject.credentials
-          Timecop.travel(Time.now + 1200) { subject.credentials }
+          instance.credentials
+          Timecop.travel(Time.now + 1200) { instance.credentials }
 
           expect(stub).to have_been_made.twice
         end
@@ -186,7 +190,7 @@ module Incognia
           stub_token_request_401
 
           expect {
-            subject.credentials
+            instance.credentials
           }.to raise_exception APIAuthenticationError
         end
       end
@@ -196,7 +200,7 @@ module Incognia
           stub_request_timeout("v2/token")
 
           expect {
-            subject.credentials
+            instance.credentials
           }.to raise_exception APIError
         end
       end

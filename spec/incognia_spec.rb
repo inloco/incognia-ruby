@@ -2,12 +2,38 @@
 require 'securerandom'
 
 module Incognia
+  RSpec.describe '.configure' do
+    it 'sets configuration on Configuration.instance' do
+      config = {
+        client_id: SecureRandom.uuid,
+        client_secret: SecureRandom.uuid,
+        host: 'https://api.incognia.com/api'
+      }
+
+      Incognia.configure(**config)
+
+      expect(Configuration.instance.client_id).to eq(config[:client_id])
+      expect(Configuration.instance.client_secret).to eq(config[:client_secret])
+      expect(Configuration.instance.host).to eq(config[:host])
+    end
+  end
+
+  RSpec.describe '.config' do
+    it 'returns the instance of Configuration' do
+      expect(Incognia.config).to eq(Configuration.instance)
+    end
+  end
+
   RSpec.describe Incognia::Api do
-    subject(:api) do
-      Api.new(client_id: 'client_id', client_secret: 'client_secret')
+    before do
+      Incognia.configure(
+        client_id: 'client_id',
+        client_secret: 'client_secret',
+        host: 'https://api.incognia.com/api'
+      )
     end
 
-    describe "#register_signup" do
+    describe ".register_signup" do
       let(:locale) { "en-US" }
       let(:country_name) { "United States of America" }
       let(:country_code) { "US" }
@@ -47,7 +73,7 @@ module Incognia
         stub_token_request
         stub_signup_request
 
-        signup = api.register_signup(request_token: request_token, address: address)
+        signup = described_class.register_signup(request_token: request_token, address: address)
 
         expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
         expect(signup.id).
@@ -72,7 +98,7 @@ module Incognia
               }
             )
 
-            api.register_signup(token_name => token_value)
+            described_class.register_signup(token_name => token_value)
 
             expect(stub).to have_been_made.once
           end
@@ -92,7 +118,7 @@ module Incognia
             }
           )
 
-          api.register_signup(request_token: request_token, address: address)
+          described_class.register_signup(request_token: request_token, address: address)
 
           expect(stub).to have_been_made.once
         end
@@ -108,7 +134,7 @@ module Incognia
             }
           )
 
-          api.register_signup(request_token: request_token, address: structured_address)
+          described_class.register_signup(request_token: request_token, address: structured_address)
 
           expect(stub).to have_been_made.once
         end
@@ -124,7 +150,7 @@ module Incognia
             }
           )
 
-          api.register_signup(request_token: request_token, address: coordinates_address)
+          described_class.register_signup(request_token: request_token, address: coordinates_address)
 
           expect(stub).to have_been_made.once
         end
@@ -141,7 +167,7 @@ module Incognia
                 }
               )
 
-              api.register_signup(
+              described_class.register_signup(
                 request_token: request_token,
                 **opts
               )
@@ -163,7 +189,7 @@ module Incognia
       end
     end
 
-    describe "#register_login" do
+    describe ".register_login" do
       let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
 
@@ -171,7 +197,7 @@ module Incognia
         stub_token_request
         stub_login_request
 
-        login = api.register_login(
+        login = described_class.register_login(
           request_token: request_token,
           account_id: account_id
         )
@@ -200,7 +226,7 @@ module Incognia
               }
             )
 
-            api.register_login(
+            described_class.register_login(
               account_id: account_id,
               token_name => token_value
             )
@@ -229,7 +255,7 @@ module Incognia
                 }
               )
 
-              api.register_login(
+              described_class.register_login(
                 request_token: request_token,
                 account_id: account_id,
                 **opts
@@ -253,7 +279,7 @@ module Incognia
 
     end
 
-    describe "#register_payment" do
+    describe ".register_payment" do
       let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
 
@@ -261,7 +287,7 @@ module Incognia
         stub_token_request
         stub_payment_request
 
-        payment = api.register_payment(
+        payment = described_class.register_payment(
           request_token: request_token,
           account_id: account_id
         )
@@ -290,7 +316,7 @@ module Incognia
               }
             )
 
-            api.register_payment(
+            described_class.register_payment(
               account_id: account_id,
               token_name => token_value
             )
@@ -319,7 +345,7 @@ module Incognia
                 }
               )
 
-              api.register_payment(
+              described_class.register_payment(
                 request_token: request_token,
                 account_id: account_id,
                 **opts
@@ -342,26 +368,31 @@ module Incognia
       end
     end
 
-    describe "#register_feedback" do
+    describe ".register_feedback" do
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
       let(:timestamp) { 1655749693000 }
       let(:expires_at) { '2024-03-13T10:12:01Z' }
 
-      before { stub_token_request }
+      before do
+        allow(described_class).to receive(:warn)
+
+        stub_token_request
+      end
+
 
       it "when successful returns true" do
         stub_register_feedback_request
 
-        feedback_registered = api.register_feedback(event: event, timestamp: timestamp)
+        feedback_registered = described_class.register_feedback(event: event, timestamp: timestamp)
         expect(feedback_registered).to be(true)
       end
 
       it "warns about the deprecation of timestamp" do
         stub_register_feedback_request
 
-        expect(api).to receive(:warn).with("Deprecation warning: use occurred_at instead of timestamp")
+        expect(described_class).to receive(:warn).with("Deprecation warning: use occurred_at instead of timestamp")
 
-        api.register_feedback(event: event, timestamp: timestamp)
+        described_class.register_feedback(event: event, timestamp: timestamp)
       end
 
       context "HTTP request" do
@@ -374,7 +405,7 @@ module Incognia
             }
           )
 
-          api.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at)
+          described_class.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at)
 
           expect(stub).to have_been_made.once
         end
@@ -390,7 +421,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, timestamp: timestamp)
+            described_class.register_feedback(event: event, timestamp: timestamp)
 
             expect(stub).to have_been_made.once
           end
@@ -407,7 +438,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, timestamp: timestamp)
+            described_class.register_feedback(event: event, timestamp: timestamp)
 
             expect(stub).to have_been_made.once
           end
@@ -422,7 +453,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event)
+            described_class.register_feedback(event: event)
 
             expect(stub).to have_been_made.once
           end
@@ -439,7 +470,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, occurred_at: occurred_at)
+            described_class.register_feedback(event: event, occurred_at: occurred_at)
 
             expect(stub).to have_been_made.once
           end
@@ -456,7 +487,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, occurred_at: occurred_at)
+            described_class.register_feedback(event: event, occurred_at: occurred_at)
 
             expect(stub).to have_been_made.once
           end
@@ -473,7 +504,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, expires_at: expires_at)
+            described_class.register_feedback(event: event, expires_at: expires_at)
 
             expect(stub).to have_been_made.once
           end
@@ -490,7 +521,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event, expires_at: expires_at)
+            described_class.register_feedback(event: event, expires_at: expires_at)
 
             expect(stub).to have_been_made.once
           end
@@ -505,7 +536,7 @@ module Incognia
               }
             )
 
-            api.register_feedback(event: event)
+            described_class.register_feedback(event: event)
 
             expect(stub).to have_been_made.once
           end
@@ -523,7 +554,7 @@ module Incognia
                 }
               )
 
-              api.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at, id_name => id)
+              described_class.register_feedback(event: event, timestamp: timestamp, expires_at: expires_at, id_name => id)
 
               expect(stub).to have_been_made.once
             end
@@ -547,6 +578,80 @@ module Incognia
         to eql expected[:evidence][:location_services][:location_permission_enabled]
       expect(model.evidence.location_services.location_sensors_enabled).
         to eql expected[:evidence][:location_services][:location_sensors_enabled]
+    end
+
+    context 'deprecated instance' do
+      let(:api_instance) do
+        described_class.new(client_id: 'id', client_secret: 'secret')
+      end
+
+      before do
+        allow_any_instance_of(described_class).to receive(:warn)
+      end
+
+      describe 'initialization' do
+        it 'configures Incognia with client_id and client_secret' do
+          expect(Incognia).to receive(:configure).with(
+            client_id: 'id',
+            client_secret: 'secret'
+          )
+
+          api_instance
+        end
+      end
+
+      shared_examples_for 'instance method delegation' do |method, args|
+        it "calls Incognia.#{method}" do
+          expect(described_class).to receive(method).with(**args)
+
+          api_instance.method(method).call(**args)
+        end
+      end
+
+      describe '#register_signup' do
+        it_behaves_like 'instance method delegation', :register_signup, {
+          request_token: 'request_token',
+          address: 'address',
+          account_id: 'account_id'
+        }
+      end
+
+      describe '#register_login' do
+        it_behaves_like 'instance method delegation', :register_login, {
+          account_id: 'account_id',
+          request_token: 'token',
+          external_id: 'external_id'
+        }
+      end
+
+      describe '#register_payment' do
+        it_behaves_like 'instance method delegation', :register_payment, {
+          account_id: 'account_id',
+          request_token: 'token',
+          external_id: 'external_id'
+        }
+      end
+
+      describe '#register_feedback' do
+        it_behaves_like 'instance method delegation', :register_feedback, {
+          event: 'event',
+          account_id: 'account_id'
+        }
+      end
+
+      describe '#connection' do
+        it 'calls Incognia.connection' do
+          expect(described_class).to receive(:connection)
+
+          api_instance.connection
+        end
+
+        it 'warns about deprecation of #connection and .connection' do
+          expect(api_instance).to receive(:warn).with("Deprecation warning: #connection and .connection are deprecated and will be private.")
+
+          api_instance.connection
+        end
+      end
     end
   end
 end
