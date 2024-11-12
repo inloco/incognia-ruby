@@ -1,16 +1,13 @@
 module Incognia
   module Constants
     module FeedbackEvent
+      ACCOUNT_ALLOWED = 'account_allowed'.freeze
       ACCOUNT_TAKEOVER = 'account_takeover'.freeze
-      CHALLENGE_FAILED = 'challenge_failed'.freeze
-      CHALLENGE_PASSED = 'challenge_passed'.freeze
       CHARGEBACK = 'chargeback'.freeze
       CHARGEBACK_NOTIFICATION = 'chargeback_notification'.freeze
-      IDENTITY_FRAUD = 'identity_fraud'.freeze
-      MPOS_FRAUD = 'mpos_fraud'.freeze
-      PASSWORD_CHANGE_FAILED = 'password_change_failed'.freeze
-      PASSWORD_CHANGED_SUCCESSFULLY = 'password_changed_successfully'.freeze
       PROMOTION_ABUSE = 'promotion_abuse'.freeze
+      DEVICE_ALLOWED = 'device_allowed'.freeze
+      IDENTITY_FRAUD = 'identity_fraud'.freeze
       RESET = 'reset'.freeze
       VERIFIED = 'verified'.freeze
 
@@ -18,7 +15,12 @@ module Incognia
       SIGNUP_DECLINED = 'signup_declined'.freeze
 
       LOGIN_ACCEPTED = 'login_accepted'.freeze
+      LOGIN_ACCEPTED_BY_DEVICE_VERIFICATION = 'login_accepted_by_device_verification'.freeze
+      LOGIN_ACCEPTED_BY_FACIAL_BIOMETRICS = 'login_accepted_by_facial_biometrics'.freeze
+      LOGIN_ACCEPTED_BY_MANUAL_REVIEW = 'login_accepted_by_manual_review'.freeze
       LOGIN_DECLINED = 'login_declined'.freeze
+      LOGIN_DECLINED_BY_FACIAL_BIOMETRICS = 'login_declined_by_facial_biometrics'.freeze
+      LOGIN_DECLINED_BY_MANUAL_REVIEW = 'login_declined_by_manual_review'.freeze
 
       PAYMENT_ACCEPTED = 'payment_accepted'.freeze
       PAYMENT_ACCEPTED_BY_CONTROL_GROUP = 'payment_accepted_by_control_group'.freeze
