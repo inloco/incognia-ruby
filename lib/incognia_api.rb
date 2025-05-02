@@ -1,11 +1,12 @@
 # frozen_string_literal: true
-
+require 'time'
 require_relative "incognia_api/configuration"
 require_relative "incognia_api/version"
 require_relative "incognia_api/client"
 require_relative "incognia_api/util"
 require_relative "incognia_api/address"
 require_relative "incognia_api/api"
+require_relative "incognia_api/location"
 
 require_relative "incognia_api/resources/api_resource"
 require_relative "incognia_api/resources/signup_assessment"
