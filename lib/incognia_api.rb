@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'time'
+
 require_relative "incognia_api/configuration"
 require_relative "incognia_api/version"
 require_relative "incognia_api/client"

@@ -239,18 +239,18 @@ module Incognia
         it_behaves_like 'receiving one of the required tokens with account_id', :installation_id
         it_behaves_like 'receiving one of the required tokens with account_id', :session_token
 
-        context 'when location is provided' do
-          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194, collected_at: "2025-04-27T05:03:45-02:00") }
+        shared_examples_for 'a login request that includes location in the request body' do
 
           it 'includes location in the request body' do
             stub_token_request
-
+        
             body = {
               type: 'login',
               request_token: request_token,
-              account_id: account_id
-            }.merge(location.to_hash)
-
+              account_id: account_id,
+              location: location&.to_hash,
+            }
+        
             stub = stub_login_request.with(
               body: body,
               headers: {
@@ -258,7 +258,7 @@ module Incognia
                 'Authorization' => /Bearer.*/
               }
             )
-
+        
             described_class.register_login(
               request_token: request_token,
               account_id: account_id,
@@ -268,7 +268,17 @@ module Incognia
             expect(stub).to have_been_made.once
           end
         end
-        
+
+        context 'when location with a timestamp is provided' do
+          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194, collected_at: "2025-04-27T05:03:45-02:00") }
+          it_behaves_like 'a login request that includes location in the request body'
+        end
+
+        context 'when location without a timestamp is provided' do
+          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194) }
+          it_behaves_like 'a login request that includes location in the request body'
+        end
+  
         context 'when receiving any other optional arguments' do
           shared_examples_for 'receiving optional args' do |optional_arguments|
             it "hits the endpoint also with #{optional_arguments}" do
@@ -359,18 +369,17 @@ module Incognia
         it_behaves_like 'receiving one of the required tokens with account_id', :installation_id
         it_behaves_like 'receiving one of the required tokens with account_id', :session_token
 
-        context 'when location is provided' do
-          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194, collected_at: "2025-04-27T05:03:45-02:00") }
-
+        shared_examples_for 'a payment request that includes location in the request body' do
           it 'includes location in the request body' do
             stub_token_request
-
+        
             body = {
               type: 'payment',
               request_token: request_token,
-              account_id: account_id
-            }.merge(location.to_hash)
-
+              account_id: account_id,
+              location: location&.to_hash,
+            }
+        
             stub = stub_payment_request.with(
               body: body,
               headers: {
@@ -378,7 +387,7 @@ module Incognia
                 'Authorization' => /Bearer.*/
               }
             )
-
+        
             described_class.register_payment(
               request_token: request_token,
               account_id: account_id,
@@ -387,6 +396,16 @@ module Incognia
         
             expect(stub).to have_been_made.once
           end
+        end
+
+        context 'when location with a timestamp is provided' do
+          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194) }
+          it_behaves_like 'a payment request that includes location in the request body'
+        end
+
+        context 'when location without a timestamp is provided' do
+          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194) }
+          it_behaves_like 'a payment request that includes location in the request body'
         end
 
         context 'when receiving any other optional arguments' do

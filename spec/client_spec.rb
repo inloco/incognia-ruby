@@ -36,7 +36,7 @@ module Incognia
         stub = stub_request(:post, test_endpoint).
           with(
             body: sample_json,
-            headers: { 'Authorization'=> /Bearer .+/}
+            headers: { 'Authorization'=> "Bearer #{JSON.parse(token_fixture)["access_token"]}" }
           ).
           to_return(
             status: 200,

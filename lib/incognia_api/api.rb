@@ -29,7 +29,7 @@ module Incognia
           account_id: account_id,
           request_token: request_token
         }.compact
-        params.merge!(location&.to_hash) if location
+        params.merge!(location: location&.to_hash) if location
         params.merge!(opts)
 
         response = connection.request(
@@ -63,7 +63,7 @@ module Incognia
           account_id: account_id,
           request_token: request_token
         }.compact
-        params.merge!(location&.to_hash) if location
+        params.merge!(location: location&.to_hash) if location
         params.merge!(opts)
 
         response = connection.request(
