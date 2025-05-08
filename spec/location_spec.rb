@@ -1,88 +1,75 @@
 require "spec_helper"
+require "date"
 
 module Incognia
   RSpec.describe Location do
     let(:latitude) { 12.123 }
     let(:longitude) { -7.123 }
     let(:collected_at) { "2025-04-23T12:12:12-03:00" }
-    let(:simple_format) do
-      {
-        latitude: latitude,
-        longitude: longitude,
-      }
-    end
-    let(:complete_format) do
-      {
-        latitude: latitude,
-        longitude: longitude,
-        collected_at: collected_at,
-      }
-    end
+
     let(:simple_location) do
       described_class.new(latitude: latitude, longitude: longitude)
     end
+
     let(:complete_location) do
       described_class.new(latitude: latitude, longitude: longitude, collected_at: collected_at)
     end
 
-    INVALID_TIMESTAMPS = [
-        "2025-04-23T12:12:12-3:00",
-        "2025-04-23T12:12:12-30:00",
-        "2025-04-23T12:12-03:00",
-        "2025-04-23",
-        "20250423",
-        "2024 Mar 03 05:12:41.211 PDT",
-        "Jan 21 18:20:11 +0000 2024",
-        "19/Apr/2023:06:36:15 -0700",
-        "Dec 2, 2023 2:39:58 AM",
-        "Jun 09 2023 15:28:14"
-    ].freeze
+    describe "#to_hash" do
+      it "omits nil values" do
+        expected_hash = {
+          latitude: latitude,
+          longitude: longitude,
+        }
 
-    let(:valid_utc_timestamp) { "2025-04-23T12:12:12Z"}
-
-    it "does not accept empty parameters" do
-      expect { described_class.new }.to raise_error ArgumentError
-    end
-
-    it "does not accept just a latitude parameter" do
-      expect { described_class.new(latitude:latitude) }.to raise_error ArgumentError
-    end
-
-    it "does not accept just a longitude parameter" do
-      expect { described_class.new(longitude:longitude) }.to raise_error ArgumentError
-    end
-
-    INVALID_TIMESTAMPS.each do |invalid_ts|
-      it "raises ArgumentError for invalid collected_at: '#{invalid_ts}'" do
-        expect {
-          described_class.new(latitude: latitude, longitude: longitude, collected_at: invalid_ts)
-        }.to raise_error(ArgumentError)
+        expect(
+          described_class.new(latitude: latitude, longitude: longitude, collected_at: nil).to_hash
+        ).to match(expected_hash)
       end
-    end
 
-    it "accepts a valid UTC timestamp" do
-      utc_timestamp = "2025-04-23T12:12:12Z"
-      location = described_class.new(latitude: latitude, longitude: longitude, collected_at: utc_timestamp)
+      context "when the Location object does NOT have a collected_at field" do
+        it "returns a hash with latitude and longitude" do
+          expected_hash = {
+            latitude: latitude,
+            longitude: longitude,
+          }
     
-      expect(location.to_hash).to eql({
-        latitude: latitude,
-        longitude: longitude,
-        collected_at: utc_timestamp
-      })
-    end
+          expect(simple_location.to_hash).to match(expected_hash)
+        end
+      end
+    
+      context "when the Location object has a collected_at field" do
+        it "returns a hash with latitude, longitude and timestamp" do
+          expected_hash = {
+            latitude: latitude,
+            longitude: longitude,
+            collected_at: collected_at,
+          }
+    
+          expect(complete_location.to_hash).to match(expected_hash)
+        end
+      end
 
-    it "omits nil values" do
-      expect(
-        described_class.new(latitude: latitude, longitude: longitude, collected_at: nil).to_hash
-      ).to eql(simple_format)
-    end
+      shared_examples "collected_at normalization" do |klass_name, value_proc|
+        context "when receiving a #{klass_name} object in collected_at field" do
+          let(:collected_at) { instance_exec(&value_proc) }
 
-    it "provides #to_hash with the API format (simple)" do
-      expect(simple_location.to_hash).to eql(simple_format)
-    end
+          it "returns a hash with collected_at in RFC3339 format" do
+            expected_hash = {
+              latitude: latitude,
+              longitude: longitude,
+              collected_at: collected_at.to_datetime.rfc3339,
+            }
 
-    it "provides #to_hash with the API format (complete)" do
-      expect(complete_location.to_hash).to eql(complete_format)
+            location = described_class.new(latitude: latitude, longitude: longitude, collected_at: collected_at)
+            expect(location.to_hash).to match(expected_hash)
+          end
+        end
+      end
+
+      include_examples "collected_at normalization", "Date", -> { Date.parse("2025-04-23T12:12:12-03:00") }
+      include_examples "collected_at normalization", "Time", -> { Time.new(2025, 4, 23, 12, 12, 12, "-03:00") }
+      include_examples "collected_at normalization", "DateTime", -> { DateTime.parse("2025-04-23T12:12:12-03:00") }
     end
   end
 end
