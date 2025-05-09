@@ -248,7 +248,7 @@ module Incognia
               type: 'login',
               request_token: request_token,
               account_id: account_id,
-              location: location&.to_hash,
+              location: location.to_hash,
             }
         
             stub = stub_login_request.with(
@@ -377,7 +377,7 @@ module Incognia
               type: 'payment',
               request_token: request_token,
               account_id: account_id,
-              location: location&.to_hash,
+              location: location.to_hash,
             }
         
             stub = stub_payment_request.with(
