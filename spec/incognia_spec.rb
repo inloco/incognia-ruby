@@ -399,7 +399,7 @@ module Incognia
         end
 
         context 'when location with a timestamp is provided' do
-          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194) }
+          let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194, collected_at: "2025-04-27T05:03:45-02:00") }
           it_behaves_like 'a payment request that includes location in the request body'
         end
 
