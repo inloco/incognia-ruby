@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [2.1.0] - 2025-05-09
+
+- Add support for passing an optional location parameter to register logins and payments
+
 ## [2.0.0] - 2024-11-12
 
 - Remove support for instance usage of Incognia::Api

@@ -12,7 +12,7 @@ module Incognia
       def register_signup(request_token: nil, address: nil, **opts)
         params = { request_token: request_token }.compact
         params.merge!(opts)
-        params.merge!(address&.to_hash) if address
+        params.merge!(address.to_hash) if address
 
         response = connection.request(
           :post,
@@ -23,12 +23,13 @@ module Incognia
         SignupAssessment.from_hash(response.body) if response.success?
       end
 
-      def register_login(account_id:, request_token: nil, **opts)
+      def register_login(account_id:, request_token: nil, location: nil, **opts)
         params = {
           type: :login,
           account_id: account_id,
           request_token: request_token
         }.compact
+        params.merge!(location: location.to_hash) if location
         params.merge!(opts)
 
         response = connection.request(
@@ -56,12 +57,13 @@ module Incognia
         response.success?
       end
 
-      def register_payment(account_id:, request_token: nil, **opts)
+      def register_payment(account_id:, request_token: nil, location: nil, **opts)
         params = {
           type: :payment,
           account_id: account_id,
           request_token: request_token
         }.compact
+        params.merge!(location: location.to_hash) if location
         params.merge!(opts)
 
         response = connection.request(
