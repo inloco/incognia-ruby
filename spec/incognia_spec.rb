@@ -68,12 +68,13 @@ module Incognia
       let(:address) { Address.new(line: line_format) }
       let(:coordinates_address) { Address.new(coordinates: coordinates_format) }
       let(:request_token) { SecureRandom.uuid }
+      let(:person_id) { PersonId.new(type: "cpf", value: "12345678901") }
 
       it "when successful returns the resource" do
         stub_token_request
         stub_signup_request
 
-        signup = described_class.register_signup(request_token: request_token, address: address)
+        signup = described_class.register_signup(request_token: request_token, address: address, person_id: person_id)
 
         expected = JSON.parse(unknown_signup_fixture, symbolize_names: true)
         expect(signup.id).
@@ -192,6 +193,7 @@ module Incognia
     describe ".register_login" do
       let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
+      let(:person_id) {PersonId.new(type: "cpf", value: "12345678901")}
 
       it "when successful returns the resource" do
         stub_token_request
@@ -199,7 +201,8 @@ module Incognia
 
         login = described_class.register_login(
           request_token: request_token,
-          account_id: account_id
+          account_id: account_id,
+          person_id: person_id
         )
 
         expected = JSON.parse(unknown_login_fixture, symbolize_names: true)
@@ -322,6 +325,7 @@ module Incognia
     describe ".register_payment" do
       let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
+      let(:person_id) {PersonId.new(type: "cpf", value: "12345678901")}
 
       it "when successful returns the resource" do
         stub_token_request
@@ -329,7 +333,8 @@ module Incognia
 
         payment = described_class.register_payment(
           request_token: request_token,
-          account_id: account_id
+          account_id: account_id,
+          person_id: person_id
         )
 
         expected = JSON.parse(unknown_payment_fixture, symbolize_names: true)
@@ -451,6 +456,7 @@ module Incognia
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
       let(:occurred_at) { '2024-03-13T10:12:01Z' }
       let(:expires_at) { '2024-03-13T10:12:02Z' }
+      let(:person_id) {PersonId.new(type: "cpf", value: "12345678901")}
 
       before do
         allow(described_class).to receive(:warn)
@@ -477,6 +483,23 @@ module Incognia
           )
 
           described_class.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at)
+
+          expect(stub).to have_been_made.once
+        end
+
+        it "hits the endpoint with event and person_id" do
+          stub = stub_register_feedback_request
+          stub.with(
+            body: {
+              event: event,
+              person_id: person_id.to_hash
+            },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          described_class.register_feedback(event: event, person_id: person_id)
 
           expect(stub).to have_been_made.once
         end
