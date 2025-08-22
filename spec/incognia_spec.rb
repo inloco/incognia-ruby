@@ -456,7 +456,7 @@ module Incognia
       let(:event) { Incognia::Constants::FeedbackEvent.constants.sample.to_s }
       let(:occurred_at) { '2024-03-13T10:12:01Z' }
       let(:expires_at) { '2024-03-13T10:12:02Z' }
-      let(:person_id) {PersonId.new(type: "cpf", value: "12345678901")}
+      let(:person_id) { PersonId.new(type: "cpf", value: "12345678901") }
 
       before do
         allow(described_class).to receive(:warn)
