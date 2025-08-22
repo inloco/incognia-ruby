@@ -325,7 +325,7 @@ module Incognia
     describe ".register_payment" do
       let(:request_token) { SecureRandom.uuid }
       let(:account_id) { SecureRandom.uuid }
-      let(:person_id) {PersonId.new(type: "cpf", value: "12345678901")}
+      let(:person_id) { PersonId.new(type: "cpf", value: "12345678901")}
 
       it "when successful returns the resource" do
         stub_token_request
