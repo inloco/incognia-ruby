@@ -9,10 +9,11 @@ module Incognia
       # business layer: uses the Client.instance to build domain objects
       # raises missing parameters errors
 
-      def register_signup(request_token: nil, address: nil, **opts)
+      def register_signup(request_token: nil, address: nil, person_id: nil, **opts)
         params = { request_token: request_token }.compact
         params.merge!(opts)
         params.merge!(address.to_hash) if address
+        params.merge!(person_id: person_id.to_hash) if person_id
 
         response = connection.request(
           :post,
@@ -23,13 +24,14 @@ module Incognia
         SignupAssessment.from_hash(response.body) if response.success?
       end
 
-      def register_login(account_id:, request_token: nil, location: nil, **opts)
+      def register_login(account_id:, request_token: nil, location: nil, person_id: nil, **opts)
         params = {
           type: :login,
           account_id: account_id,
           request_token: request_token
         }.compact
         params.merge!(location: location.to_hash) if location
+        params.merge!(person_id: person_id.to_hash) if person_id
         params.merge!(opts)
 
         response = connection.request(
@@ -41,11 +43,12 @@ module Incognia
         LoginAssessment.from_hash(response.body) if response.success?
       end
 
-      def register_feedback(event:, occurred_at: nil, expires_at: nil, **ids)
+      def register_feedback(event:, occurred_at: nil, expires_at: nil, person_id: nil, **ids)
         occurred_at = occurred_at.to_datetime.rfc3339 if occurred_at.respond_to? :to_datetime
         expires_at = expires_at.to_datetime.rfc3339 if expires_at.respond_to? :to_datetime
 
         params = { event: event, occurred_at: occurred_at, expires_at: expires_at }.compact
+        params.merge!(person_id: person_id.to_hash) if person_id
         params.merge!(ids)
 
         response = connection.request(
@@ -57,13 +60,14 @@ module Incognia
         response.success?
       end
 
-      def register_payment(account_id:, request_token: nil, location: nil, **opts)
+      def register_payment(account_id:, request_token: nil, location: nil, person_id: nil, **opts)
         params = {
           type: :payment,
           account_id: account_id,
           request_token: request_token
         }.compact
         params.merge!(location: location.to_hash) if location
+        params.merge!(person_id: person_id.to_hash) if person_id
         params.merge!(opts)
 
         response = connection.request(
