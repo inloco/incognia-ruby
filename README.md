@@ -6,7 +6,7 @@ Incognia Ruby library provides easy access to the Incogia API from Ruby
 applications. It includes:
 
 - Basic Access Token management (with transparent token refresh)
-- API resounces dinamically built from API responses
+- API resources dinamically built from API responses
 
 For more information on how to integrate Incognia APIs, refer to one of the
 following guides:
@@ -69,14 +69,35 @@ assessment = Incognia::Api.register_signup(
 It also supports optional parameters, for example:
 
 ```ruby
-address = Incognia::Address.new(line: "West 34th Street, New York City, NY 10001")
+# address may include any or all of the following formats: address line, coordinates, or structured address
+address = Incognia::Address.new(
+  line: "Av. Paulista, 1578 - Bela Vista, São Paulo - SP, 01310-200", 
+  coordinates: {lat: -23.589339, lng: -46.659043}, 
+  structured: 
+  {
+    locale: "pt-BR",
+    country_name: "Brasil",
+    country_code: "BR",
+    state: "SP",
+    city: "São Paulo",
+    borough: "",
+    neighborhood: "Bela Vista",
+    street: "Av. Paulista",
+    number: "1578",
+    complements: "Andar 2",
+    postal_code: "01310-200"
+  }
+)
+# Person id: either a valid SSN (USA) or CPF (Brazil). Only numerical characters must be provided as value.
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
 request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 external_id = "7b02736a-7718-4b83-8982-f68fb6f501fa"
 
 assessment = Incognia::Api.register_signup(
   request_token: request_token,
   address: address,
-  external_id: external_id
+  external_id: external_id,
+  person_id: person_id
 )
 
 # => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
@@ -102,14 +123,29 @@ assessment = Incognia::Api.register_login(
 It also supports optional parameters, for example:
 
 ```ruby
+timestamp = Date.parse("2025-04-23T12:12:12-03:00")
+location = Incognia::Location.new(latitude: -23.589339, longitude: -46.659043, collected_at: timestamp)
+# These are all also valid timestamps for Location.timestamp
+timestamp1 = Time.new(2025, 4, 23, 12, 12, 12, "-03:00")
+timestamp2 = DateTime.parse("2025-04-23T12:12:12-03:00")
+timestamp3 = "2025-04-23T12:12:12-03:00"
+timestamp4 = Time.now()
+
+# Person id: either a valid SSN (USA) or CPF (Brazil). Only numerical characters must be provided as value.
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
+external_id = 'some-external-identifier'
+
+# Mandatory fields
 request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 account_id = 'account-identifier-123'
-external_id = 'some-external-identifier'
+
 
 assessment = Incognia::Api.register_login(
   request_token: request_token,
   account_id: account_id,
   external_id: external_id,
+  person_id: person_id,
+  location: location,
   eval: false # can be used to register a new login without evaluating it
 )
 
@@ -182,9 +218,17 @@ payment_methods = [
   }
 ]
 
+location = Incognia::Location.new(latitude: -23.589339, longitude: -46.659043, collected_at: "2025-04-23T12:12:12-03:00")
+
+# Person id: either a valid SSN (USA) or CPF (Brazil). Only numerical characters must be provided as value.
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
+external_id = 'some-external-identifier'
+
 assessment = Incognia::Api.register_payment(
   request_token: 'request-token',
   account_id: 'account-id',
+  location: location,
+  person_id: person_id,
   external_id: 'external-id',
   addresses: addresses,
   payment_value: payment_value,
@@ -198,21 +242,25 @@ assessment = Incognia::Api.register_payment(
 
 This method registers a feedback event for the given identifiers (optional arguments), returning true when success.
 
-The `occurred_at` argument should be a _Time_, _DateTime_ or an date in **RFC 3339** format.
+The `occurred_at` argument should be a _Time_, _DateTime_ or a date in **RFC 3339** format.
 
-The `expires_at` argument should be a _Time_, _DateTime_ or an date in **RFC 3339** format.
+The `expires_at` argument should be a _Time_, _DateTime_ or a date in **RFC 3339** format.
 
 
 ```ruby
 request_token = 'request-token'
 account_id = 'account-id'
 occurred_at = DateTime.parse('2024-07-22T15:20:00Z')
+# person id: optional
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
+
 
 success = Incognia::Api.register_feedback(
   event: Incognia::Constants::FeedbackEvent::ACCOUNT_TAKEOVER,
   occurred_at: occurred_at,
   request_token: request_token,
-  account_id: account_id
+  account_id: account_id,
+  person_id: person_id
 )
 
 # => true

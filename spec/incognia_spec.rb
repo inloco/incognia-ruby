@@ -84,6 +84,25 @@ module Incognia
       end
 
       context "HTTP request" do
+
+        it "hits the endpoint with person_id" do
+          person_id = PersonId.new(type: "cpf", value: "12345678901")
+
+          stub = stub_signup_request.with(
+            body: {
+              request_token: request_token,
+              person_id: person_id.to_hash
+            },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          described_class.register_signup(request_token: request_token, person_id: person_id)
+
+          expect(stub).to have_been_made.once
+        end
+
         shared_examples_for 'receiving one of the required tokens' do |token_name|
           let(:token_value) { SecureRandom.uuid }
 
@@ -209,6 +228,27 @@ module Incognia
       end
 
       context "HTTP request" do
+
+        it "hits the endpoint with person_id" do
+          person_id = PersonId.new(type: "cpf", value: "12345678901")
+
+          stub = stub_login_request.with(
+            body: {
+              type: 'login',
+              request_token: request_token,
+              account_id: account_id,
+              person_id: person_id.to_hash
+            },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          described_class.register_login(request_token: request_token, account_id: account_id, person_id: person_id)
+
+          expect(stub).to have_been_made.once
+        end
+
         shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
           let(:token_value) { SecureRandom.uuid }
 
@@ -339,6 +379,27 @@ module Incognia
       end
 
       context "HTTP request" do
+
+        it "hits the endpoint with person_id" do
+          person_id = PersonId.new(type: "cpf", value: "12345678901")
+
+          stub = stub_payment_request.with(
+            body: {
+              type: 'payment',
+              request_token: request_token,
+              account_id: account_id,
+              person_id: person_id.to_hash
+            },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          described_class.register_payment(request_token: request_token, account_id: account_id, person_id: person_id)
+
+          expect(stub).to have_been_made.once
+        end
+
         shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
           let(:token_value) { SecureRandom.uuid }
 
@@ -477,6 +538,25 @@ module Incognia
           )
 
           described_class.register_feedback(event: event, occurred_at: occurred_at, expires_at: expires_at)
+
+          expect(stub).to have_been_made.once
+        end
+
+        it "hits the endpoint with event and person_id" do
+          stub = stub_register_feedback_request
+          person_id = PersonId.new(type: "cpf", value: "12345678901")
+
+          stub.with(
+            body: {
+              event: event,
+              person_id: person_id.to_hash
+            },
+            headers: {
+              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+            }
+          )
+
+          described_class.register_feedback(event: event, person_id: person_id)
 
           expect(stub).to have_been_made.once
         end
