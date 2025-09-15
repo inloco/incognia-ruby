@@ -89,7 +89,7 @@ address = Incognia::Address.new(
   }
 )
 # Person id: either a valid SSN (USA) or CPF (Brazil). Only numerical characters must be provided as value.
-my_person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
 request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
 external_id = "7b02736a-7718-4b83-8982-f68fb6f501fa"
 
@@ -97,7 +97,7 @@ assessment = Incognia::Api.register_signup(
   request_token: request_token,
   address: address,
   external_id: external_id,
-  person_id: my_person_id
+  person_id: person_id
 )
 
 # => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
@@ -124,7 +124,7 @@ It also supports optional parameters, for example:
 
 ```ruby
 timestamp = Date.parse("2025-04-23T12:12:12-03:00")
-my_location = Incognia::Location.new(latitude: -23.589339, longitude: -46.659043, collected_at: timestamp)
+location = Incognia::Location.new(latitude: -23.589339, longitude: -46.659043, collected_at: timestamp)
 # These are all also valid timestamps for Location.timestamp
 timestamp1 = Time.new(2025, 4, 23, 12, 12, 12, "-03:00")
 timestamp2 = DateTime.parse("2025-04-23T12:12:12-03:00")
@@ -132,7 +132,7 @@ timestamp3 = "2025-04-23T12:12:12-03:00"
 timestamp4 = Time.now()
 
 # Person id: either a valid SSN (USA) or CPF (Brazil). Only numerical characters must be provided as value.
-my_person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
 external_id = 'some-external-identifier'
 
 # Mandatory fields
@@ -144,8 +144,8 @@ assessment = Incognia::Api.register_login(
   request_token: request_token,
   account_id: account_id,
   external_id: external_id,
-  person_id: my_person_id,
-  location: my_location,
+  person_id: person_id,
+  location: location,
   eval: false # can be used to register a new login without evaluating it
 )
 
@@ -218,17 +218,17 @@ payment_methods = [
   }
 ]
 
-my_location = Incognia::Location.new(latitude: -23.589339, longitude: -46.659043, collected_at: "2025-04-23T12:12:12-03:00")
+location = Incognia::Location.new(latitude: -23.589339, longitude: -46.659043, collected_at: "2025-04-23T12:12:12-03:00")
 
 # Person id: either a valid SSN (USA) or CPF (Brazil). Only numerical characters must be provided as value.
-my_person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
 external_id = 'some-external-identifier'
 
 assessment = Incognia::Api.register_payment(
   request_token: 'request-token',
   account_id: 'account-id',
-  location: my_location,
-  person_id: my_person_id,
+  location: location,
+  person_id: person_id,
   external_id: 'external-id',
   addresses: addresses,
   payment_value: payment_value,
@@ -252,7 +252,7 @@ request_token = 'request-token'
 account_id = 'account-id'
 occurred_at = DateTime.parse('2024-07-22T15:20:00Z')
 # person id: optional
-my_person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
+person_id = Incognia::PersonId.new(type: "cpf", value: "12345678901")
 
 
 success = Incognia::Api.register_feedback(
