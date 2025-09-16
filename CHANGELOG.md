@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [2.2.0] - 2025-09-16
+
+- Add support for passing an optional person_id parameter to HTTP request helpers
+
 ## [2.1.0] - 2025-05-09
 
 - Add support for passing an optional location parameter to register logins and payments
