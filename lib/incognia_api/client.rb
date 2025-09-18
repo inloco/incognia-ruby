@@ -14,9 +14,7 @@ module Incognia
       json_data = JSON.generate(data) if data
 
       connection.send(method, endpoint, json_data, headers) do |r|
-        r.headers[Faraday::Request::Authorization::KEY] ||= Faraday::Request
-          .lookup_middleware(:authorization)
-          .header(:Bearer, credentials.access_token)
+        r.headers[Faraday::Request::Authorization::KEY] ||= "Bearer #{credentials.access_token}"
       end
     rescue Faraday::ClientError, Faraday::ServerError => e
       raise APIError.new(e.to_s, e.response)
@@ -50,9 +48,8 @@ module Incognia
     protected
 
     def request_credentials
-      basic_auth = Faraday::Request
-        .lookup_middleware(:basic_auth)
-        .header(Incognia.config.client_id, Incognia.config.client_secret)
+      basic_auth = Faraday::Utils
+        .basic_header_from(Incognia.config.client_id, Incognia.config.client_secret)
 
       response = connection.send(:post, 'v2/token') do |r|
         r.headers[Faraday::Request::Authorization::KEY] = basic_auth

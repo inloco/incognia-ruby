@@ -1,7 +1,6 @@
 require "faraday"
 require "json"
 require "logger"
-require 'faraday_middleware'
 
 module Incognia
   class Api

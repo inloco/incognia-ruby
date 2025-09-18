@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v1.4.2
+      - Faraday v2.13.4
       Authorization:
       - Basic R1BXSzFMQ1paSW8xRkxPQ0NuTExNcU44UWkxSHYzazQ6RUxHOV8yazU5T0hkMUdiVXhIaGRTdGtqZUI3TXlQZ21vRjhlR2YxM0xBMU1scmZRZ1Q1bkhFMmFIaVNobVc0WA==
       Content-Type:
@@ -58,7 +58,7 @@ http_interactions:
       string: '{"installation_id":"xyz"}'
     headers:
       User-Agent:
-      - Faraday v1.4.2
+      - Faraday v2.13.4
       Authorization:
       - Bearer access_token
       Content-Type:
