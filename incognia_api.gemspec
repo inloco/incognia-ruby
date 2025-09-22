@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Official Ruby lib for communicating with Incognia API"
   spec.description   = "Official Ruby lib for communicating with Incognia API"
   spec.homepage      = "https://github.com/inloco/incognia-ruby"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 3.0.0")
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/inloco/incognia-ruby"

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    incognia_api (2.2.0)
+    incognia_api (3.0.0)
       faraday (~> 2.13)
 
 GEM
