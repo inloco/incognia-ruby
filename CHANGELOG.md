@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [3.0.0] - 2025-09-22
+- Update `faraday` dependency to version 2.13.4
+- Remove `faraday_middleware` dependency
+
 ## [2.2.0] - 2025-09-16
 
 - Add support for passing an optional person_id parameter to HTTP request helpers
