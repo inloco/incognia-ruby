@@ -27,9 +27,9 @@ module Incognia
   RSpec.describe Incognia::Api do
     before do
       Incognia.configure(
-        client_id: 'client_id',
-        client_secret: 'client_secret',
-        host: 'https://api.incognia.com/api'
+        client_id: "client_id",
+        client_secret: "client_secret",
+        host: "https://api.incognia.com/api"
       )
     end
 
@@ -63,8 +63,8 @@ module Incognia
       let(:line_format) do
         "#{number} #{street} #{city} #{state} #{postal_code}"
       end
-      let(:coordinates_format) { { lat: 40.748360070638, lng: -73.985097204837 } }
-      let(:structured_address) { Address.new(structured: structured_format ) }
+      let(:coordinates_format) { {lat: 40.748360070638, lng: -73.985097204837} }
+      let(:structured_address) { Address.new(structured: structured_format) }
       let(:address) { Address.new(line: line_format) }
       let(:coordinates_address) { Address.new(coordinates: coordinates_format) }
       let(:request_token) { SecureRandom.uuid }
@@ -84,7 +84,6 @@ module Incognia
       end
 
       context "HTTP request" do
-
         it "hits the endpoint with person_id" do
           person_id = PersonId.new(type: "cpf", value: "12345678901")
 
@@ -103,7 +102,7 @@ module Incognia
           expect(stub).to have_been_made.once
         end
 
-        shared_examples_for 'receiving one of the required tokens' do |token_name|
+        shared_examples_for "receiving one of the required tokens" do |token_name|
           let(:token_value) { SecureRandom.uuid }
 
           it "hits the endpoint with #{token_name}" do
@@ -111,7 +110,7 @@ module Incognia
 
             stub = stub_signup_request
             stub.with(
-              body: { token_name => token_value },
+              body: {token_name => token_value},
               headers: {
                 'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
               }
@@ -131,7 +130,7 @@ module Incognia
           stub_token_request
 
           stub = stub_signup_request.with(
-            body: { request_token: request_token, address_line: line_format },
+            body: {request_token: request_token, address_line: line_format},
             headers: {
               'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
             }
@@ -180,9 +179,9 @@ module Incognia
               stub_token_request
 
               stub = stub_signup_request.with(
-                body: { request_token: request_token }.merge(opts),
+                body: {request_token: request_token}.merge(opts),
                 headers: {
-                  'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+                  "Content-Type" => "application/json", "Authorization" => /Bearer.*/
                 }
               )
 
@@ -198,11 +197,11 @@ module Incognia
           it_behaves_like 'receiving optional args', 'account_id' do
             let(:opts) { { account_id: SecureRandom.uuid } }
           end
-          it_behaves_like 'receiving optional args', 'external_id' do
-            let(:opts) { { external_id: SecureRandom.uuid } }
+          it_behaves_like "receiving optional args", "external_id" do
+            let(:opts) { {external_id: SecureRandom.uuid} }
           end
-          it_behaves_like 'receiving optional args', 'policy_id' do
-            let(:opts) { { policy_id: SecureRandom.uuid } }
+          it_behaves_like "receiving optional args", "policy_id" do
+            let(:opts) { {policy_id: SecureRandom.uuid} }
           end
         end
       end
@@ -240,7 +239,7 @@ module Incognia
               person_id: person_id.to_hash
             },
             headers: {
-              'Content-Type' => 'application/json', 'Authorization' => /Bearer.*/
+              "Content-Type" => "application/json", "Authorization" => /Bearer.*/
             }
           )
 
@@ -249,7 +248,7 @@ module Incognia
           expect(stub).to have_been_made.once
         end
 
-        shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
+        shared_examples_for "receiving one of the required tokens with account_id" do |token_name|
           let(:token_value) { SecureRandom.uuid }
 
           it "hits the endpoint with #{token_name} and account_id" do
@@ -288,45 +287,45 @@ module Incognia
               type: 'login',
               request_token: request_token,
               account_id: account_id,
-              location: location.to_hash,
+              location: location.to_hash
             }
         
             stub = stub_login_request.with(
               body: body,
               headers: {
-                'Content-Type' => 'application/json',
-                'Authorization' => /Bearer.*/
+                "Content-Type" => "application/json",
+                "Authorization" => /Bearer.*/
               }
             )
         
             described_class.register_login(
               request_token: request_token,
               account_id: account_id,
-              location: location,
+              location: location
             )
-        
+
             expect(stub).to have_been_made.once
           end
         end
 
-        context 'when location with a timestamp is provided' do
+        context "when location with a timestamp is provided" do
           let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194, collected_at: "2025-04-27T05:03:45-02:00") }
-          it_behaves_like 'a login request that includes location in the request body'
+          it_behaves_like "a login request that includes location in the request body"
         end
 
-        context 'when location without a timestamp is provided' do
+        context "when location without a timestamp is provided" do
           let(:location) { Location.new(latitude: 37.7749, longitude: -122.4194) }
-          it_behaves_like 'a login request that includes location in the request body'
+          it_behaves_like "a login request that includes location in the request body"
         end
-  
-        context 'when receiving any other optional arguments' do
-          shared_examples_for 'receiving optional args' do |optional_arguments|
+
+        context "when receiving any other optional arguments" do
+          shared_examples_for "receiving optional args" do |optional_arguments|
             it "hits the endpoint also with #{optional_arguments}" do
               stub_token_request
 
               stub = stub_login_request.with(
                 body: {
-                  type: 'login',
+                  type: "login",
                   request_token: request_token,
                   account_id: account_id
                 }.merge(opts),
@@ -400,7 +399,55 @@ module Incognia
           expect(stub).to have_been_made.once
         end
 
-        shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
+        it "hits the endpoint with debtor_account and creditor_account" do
+          debtor_account = BankAccountInfo.new(
+            holder_type: "business",
+            holder_tax_id: PersonId.new(type: "cpf", value: "12345678901"),
+            branch_code: "0001",
+            account_number: "123456"
+          )
+
+          creditor_account = BankAccountInfo.new(
+            account_type: "savings",
+            account_purpose: "rural",
+            holder_type: "business",
+            holder_tax_id: PersonId.new(type: "cpf", value: "12345678901"),
+            country: "BR",
+            ispb_code: "18236120",
+            branch_code: "0002",
+            account_number: "654321",
+            account_check_digit: "0",
+            pix_keys: [
+              PixKey.new(type: "cpf", value: "12345678901"),
+              PixKey.new(type: "email", value: "human@being.com")
+            ]
+          )
+
+          stub = stub_payment_request.with(
+            body: {
+              type: "payment",
+              request_token: request_token,
+              account_id: account_id,
+              debtor_account: debtor_account.to_hash,
+              creditor_account: creditor_account.to_hash
+            },
+            headers: {
+              "Content-Type" => "application/json",
+              "Authorization" => /Bearer.*/
+            }
+          )
+
+          described_class.register_payment(
+            request_token: request_token,
+            account_id: account_id,
+            debtor_account: debtor_account,
+            creditor_account: creditor_account
+          )
+
+          expect(stub).to have_been_made.once
+        end
+
+        shared_examples_for "receiving one of the required tokens with account_id" do |token_name|
           let(:token_value) { SecureRandom.uuid }
 
           it "hits the endpoint with #{token_name} and account_id" do

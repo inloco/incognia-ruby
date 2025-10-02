@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [3.1.0] - 2025-10-01
+
+- Adds support for passing optional debtor_account and creditor_account parameters for registering payments
+
 ## [3.0.0] - 2025-09-22
 - Update `faraday` dependency to version 2.13.4
 - Remove `faraday_middleware` dependency
