@@ -59,7 +59,7 @@ module Incognia
         response.success?
       end
 
-      def register_payment(account_id:, request_token: nil, location: nil, person_id: nil, **opts)
+      def register_payment(account_id:, request_token: nil, location: nil, person_id: nil, debtor_account: nil, creditor_account: nil, **opts)
         params = {
           type: :payment,
           account_id: account_id,
@@ -67,6 +67,8 @@ module Incognia
         }.compact
         params.merge!(location: location.to_hash) if location
         params.merge!(person_id: person_id.to_hash) if person_id
+        params.merge!(debtor_account: debtor_account.to_hash) if debtor_account
+        params.merge!(creditor_account: creditor_account.to_hash) if creditor_account
         params.merge!(opts)
 
         response = connection.request(

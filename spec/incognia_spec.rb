@@ -400,6 +400,54 @@ module Incognia
           expect(stub).to have_been_made.once
         end
 
+        it "hits the endpoint with debtor_account and creditor_account" do
+          debtor_account = BankAccountInfo.new(
+            holder_type: "business",
+            holder_tax_id: PersonId.new(type: "cpf", value: "12345678901"),
+            branch_code: "0001",
+            account_number: "123456"
+          )
+
+          creditor_account = BankAccountInfo.new(
+            account_type: "savings",
+            account_purpose: "rural",
+            holder_type: "business",
+            holder_tax_id: PersonId.new(type: "cpf", value: "00000000011"),
+            country: "BR",
+            ispb_code: "18236120",
+            branch_code: "0002",
+            account_number: "654321",
+            account_check_digit: "0",
+            pix_keys: [
+              PixKey.new(type: "cpf", value: "00000000011"),
+              PixKey.new(type: "email", value: "human@being.com")
+            ]
+          )
+
+          stub = stub_payment_request.with(
+            body: {
+              type: "payment",
+              request_token: request_token,
+              account_id: account_id,
+              debtor_account: debtor_account.to_hash,
+              creditor_account: creditor_account.to_hash
+            },
+            headers: {
+              "Content-Type" => "application/json",
+              "Authorization" => /Bearer.*/
+            }
+          )
+
+          described_class.register_payment(
+            request_token: request_token,
+            account_id: account_id,
+            debtor_account: debtor_account,
+            creditor_account: creditor_account
+          )
+
+          expect(stub).to have_been_made.once
+        end
+
         shared_examples_for 'receiving one of the required tokens with account_id' do |token_name|
           let(:token_value) { SecureRandom.uuid }
 
