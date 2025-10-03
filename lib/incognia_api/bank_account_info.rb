@@ -31,21 +31,21 @@ module Incognia
 
     def to_hash
       {
-        account_type:,
-        account_purpose:,
-        holder_type:,
-        country:,
-        ispb_code:,
-        branch_code:,
-        account_number:,
-        account_check_digit:,
-        holder_tax_id: serialize_hash(holder_tax_id),
-        pix_keys: pix_keys&.map { |k| serialize_hash(k) }
+        account_type:        account_type,
+        account_purpose:     account_purpose,
+        holder_type:         holder_type,
+        country:             country,
+        ispb_code:           ispb_code,
+        branch_code:         branch_code,
+        account_number:      account_number,
+        account_check_digit: account_check_digit,
+        holder_tax_id:       serialize_hash(holder_tax_id),
+        pix_keys:            pix_keys&.map { |k| serialize_hash(k) }
       }.compact
     end
-    
+
     private
-    
+
     def serialize_hash(value)
       value.respond_to?(:to_hash) ? value.to_hash : value
     end
