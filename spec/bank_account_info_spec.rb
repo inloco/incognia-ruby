@@ -84,13 +84,13 @@ module Incognia
           account_type: account_type,
           account_purpose: account_purpose,
           holder_type: holder_type,
-          holder_tax_id: {type: "cpf", value: "12345678901"},
+          holder_tax_id: holder_tax_id.to_hash,
           country: country,
           ispb_code: ispb_code,
           branch_code: branch_code,
           account_number: account_number,
           account_check_digit: account_check_digit,
-          pix_keys: [{type: "cpf", value: "12345678901"}, {type: "email", value: "human@being.com"}]
+          pix_keys: pix_keys.map(&:to_hash)
         )
       end
     end
