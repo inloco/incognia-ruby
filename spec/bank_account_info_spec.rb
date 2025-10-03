@@ -38,42 +38,42 @@ module Incognia
 
       expect {
         described_class.new(
-          holder_tax_id: Incognia::PersonId.new(type: "cpf", value: "12345678901"),
-          branch_code: "0001",
-          account_number: "123456"
+          holder_tax_id: holder_tax_id,
+          branch_code: branch_code,
+          account_number: account_number
         )
       }.to raise_error(ArgumentError) # missing holder_type
 
       expect {
         described_class.new(
-          holder_type: "business",
-          branch_code: "0001",
-          account_number: "123456"
+          holder_type: holder_type,
+          branch_code: branch_code,
+          account_number: account_number
         )
       }.to raise_error(ArgumentError) # missing holder_tax_id
 
       expect {
         described_class.new(
-          holder_type: "business",
-          holder_tax_id: Incognia::PersonId.new(type: "cpf", value: "12345678901"),
-          account_number: "123456"
+          holder_type: holder_type,
+          holder_tax_id: holder_tax_id,
+          account_number: account_number
         )
       }.to raise_error(ArgumentError) # missing branch_code
 
       expect {
         described_class.new(
-          holder_type: "business",
-          holder_tax_id: Incognia::PersonId.new(type: "cpf", value: "12345678901"),
-          branch_code: "0001"
+          holder_type: holder_type,
+          holder_tax_id: holder_tax_id,
+          branch_code: branch_code
         )
       }.to raise_error(ArgumentError) # missing account_number
 
       expect {
         described_class.new(
-          holder_type: "business",
-          holder_tax_id: Incognia::PersonId.new(type: "cpf", value: "12345678901"),
-          branch_code: "0001",
-          account_number: "123456"
+          holder_type: holder_type,
+          holder_tax_id: holder_tax_id,
+          branch_code: branch_code,
+          account_number: account_number
         )
       }.not_to raise_error
     end
@@ -100,18 +100,13 @@ module Incognia
         expect(bank_account_info.account_type).to eq(account_type)
         expect(bank_account_info.account_purpose).to eq(account_purpose)
         expect(bank_account_info.holder_type).to eq(holder_type)
-        expect(bank_account_info.holder_tax_id.to_hash).to eq(type: "cpf", value: "12345678901")
+        expect(bank_account_info.holder_tax_id).to eq(holder_tax_id)
         expect(bank_account_info.country).to eq(country)
         expect(bank_account_info.ispb_code).to eq(ispb_code)
         expect(bank_account_info.branch_code).to eq(branch_code)
         expect(bank_account_info.account_number).to eq(account_number)
         expect(bank_account_info.account_check_digit).to eq(account_check_digit)
-        expect(bank_account_info.pix_keys.map(&:to_hash)).to eql(
-        [
-          {type: "cpf", value: "12345678901"},
-          {type: "email", value: "human@being.com"}
-        ]
-      )
+        expect(bank_account_info.pix_keys).to eql(pix_keys)
       end
     end
   end

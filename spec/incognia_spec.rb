@@ -412,14 +412,14 @@ module Incognia
             account_type: "savings",
             account_purpose: "rural",
             holder_type: "business",
-            holder_tax_id: PersonId.new(type: "cpf", value: "12345678901"),
+            holder_tax_id: PersonId.new(type: "cpf", value: "00000000011"),
             country: "BR",
             ispb_code: "18236120",
             branch_code: "0002",
             account_number: "654321",
             account_check_digit: "0",
             pix_keys: [
-              PixKey.new(type: "cpf", value: "12345678901"),
+              PixKey.new(type: "cpf", value: "00000000011"),
               PixKey.new(type: "email", value: "human@being.com")
             ]
           )

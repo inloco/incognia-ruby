@@ -30,27 +30,24 @@ module Incognia
     end
 
     def to_hash
-      h = {
-        account_type: account_type,
-        account_purpose: account_purpose,
-        holder_type: holder_type,
-        country: country,
-        ispb_code: ispb_code,
-        branch_code: branch_code,
-        account_number: account_number,
-        account_check_digit: account_check_digit
+      {
+        account_type:,
+        account_purpose:,
+        holder_type:,
+        country:,
+        ispb_code:,
+        branch_code:,
+        account_number:,
+        account_check_digit:,
+        holder_tax_id: serialize_hash(holder_tax_id),
+        pix_keys: pix_keys&.map { |k| serialize_hash(k) }
       }.compact
-
-      if holder_tax_id
-        h[:holder_tax_id] =
-          holder_tax_id.respond_to?(:to_hash) ? holder_tax_id.to_hash : holder_tax_id
-      end
-
-      if pix_keys && !pix_keys.empty?
-        h[:pix_keys] = pix_keys.map { |k| k.respond_to?(:to_hash) ? k.to_hash : k }
-      end
-
-      h
+    end
+    
+    private
+    
+    def serialize_hash(value)
+      value.respond_to?(:to_hash) ? value.to_hash : value
     end
   end
 end
