@@ -28,16 +28,16 @@ module Incognia
 
     subject(:bank_account) do
       described_class.new(
-        account_type:,
-        account_purpose:,
-        holder_type:,
-        holder_tax_id:,
-        country:,
-        ispb_code:,
-        branch_code:,
-        account_number:,
-        account_check_digit:,
-        pix_keys:
+        account_type: account_type,
+        account_purpose: account_purpose,
+        holder_type: holder_type,
+        holder_tax_id: holder_tax_id,
+        country: country,
+        ispb_code: ispb_code,
+        branch_code: branch_code,
+        account_number: account_number,
+        account_check_digit: account_check_digit,
+        pix_keys: pix_keys
       )
     end
 

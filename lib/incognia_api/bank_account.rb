@@ -29,14 +29,14 @@ module Incognia
 
     def to_hash
       h = {
-        account_type:,
-        account_purpose:,
-        holder_type:,
-        country:,
-        ispb_code:,
-        branch_code:,
-        account_number:,
-        account_check_digit:
+        account_type: account_type,
+        account_purpose: account_purpose,
+        holder_type: holder_type,
+        country: country,
+        ispb_code: ispb_code,
+        branch_code: branch_code,
+        account_number: account_number,
+        account_check_digit: account_check_digit
       }.compact
 
       if holder_tax_id
