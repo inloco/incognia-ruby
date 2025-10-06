@@ -401,14 +401,14 @@ module Incognia
         end
 
         it "hits the endpoint with debtor_account and creditor_account" do
-          debtor_account = BankAccountInfo.new(
+          debtor_account = BankAccount.new(
             holder_type: "business",
             holder_tax_id: PersonId.new(type: "cpf", value: "12345678901"),
             branch_code: "0001",
             account_number: "123456"
           )
 
-          creditor_account = BankAccountInfo.new(
+          creditor_account = BankAccount.new(
             account_type: "savings",
             account_purpose: "rural",
             holder_type: "business",

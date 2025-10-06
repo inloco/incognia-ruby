@@ -9,7 +9,7 @@ require_relative "incognia_api/api"
 require_relative "incognia_api/location"
 require_relative "incognia_api/person_id"
 require_relative "incognia_api/pix_key"
-require_relative "incognia_api/bank_account_info"
+require_relative "incognia_api/bank_account"
 
 require_relative "incognia_api/resources/api_resource"
 require_relative "incognia_api/resources/signup_assessment"

@@ -1,4 +1,3 @@
-# spec/incognia/person_id_spec.rb
 require "spec_helper"
 
 module Incognia
