@@ -45,7 +45,7 @@ GEM
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
     timecop (0.9.4)
-    uri (1.0.3)
+    uri (1.0.4)
     webmock (3.14.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
