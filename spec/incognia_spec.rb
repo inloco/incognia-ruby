@@ -83,6 +83,25 @@ module Incognia
         expect_evidences_to_match(signup, expected)
       end
 
+      it "when successful returns the resource with signals" do
+        stub_token_request
+        stub_signup_request_with_signals
+
+        signup = described_class.register_signup(
+          request_token: request_token,
+          address: address
+        )
+
+        expected = JSON.parse(unknown_signup_with_signals_fixture, symbolize_names: true)
+
+        expect(signup.id).to eql expected[:id]
+        expect(signup.risk_assessment).to eql expected[:risk_assessment]
+        expect(signup).to respond_to(:signals)
+        expect(signup.signals).not_to be_nil
+        expect(signup).not_to respond_to(:evidence)
+        expect_signals_to_match(signup, expected)
+      end
+
       context "HTTP request" do
 
         it "hits the endpoint with person_id" do
@@ -225,6 +244,25 @@ module Incognia
         expect(login.id).to eql expected[:id]
         expect(login.risk_assessment).to eql expected[:risk_assessment]
         expect_evidences_to_match(login, expected)
+      end
+
+      it "when successful returns the resource with signals" do
+        stub_token_request
+        stub_login_request_with_signals
+
+        login = described_class.register_login(
+          request_token: request_token,
+          account_id: account_id
+        )
+
+        expected = JSON.parse(unknown_login_with_signals_fixture, symbolize_names: true)
+
+        expect(login.id).to eql expected[:id]
+        expect(login.risk_assessment).to eql expected[:risk_assessment]
+        expect(login).to respond_to(:signals)
+        expect(login.signals).not_to be_nil
+        expect(login).not_to respond_to(:evidence)
+        expect_signals_to_match(login, expected)
       end
 
       context "HTTP request" do
@@ -376,6 +414,25 @@ module Incognia
         expect(payment.id).to eql expected[:id]
         expect(payment.risk_assessment).to eql expected[:risk_assessment]
         expect_evidences_to_match(payment, expected)
+      end
+
+      it "when successful returns the resource with signals" do
+        stub_token_request
+        stub_payment_request_with_signals
+
+        payment = described_class.register_payment(
+          request_token: request_token,
+          account_id: account_id
+        )
+
+        expected = JSON.parse(unknown_payment_with_signals_fixture, symbolize_names: true)
+
+        expect(payment.id).to eql expected[:id]
+        expect(payment.risk_assessment).to eql expected[:risk_assessment]
+        expect(payment).to respond_to(:signals)
+        expect(payment.signals).not_to be_nil
+        expect(payment).not_to respond_to(:evidence)
+        expect_signals_to_match(payment, expected)
       end
 
       context "HTTP request" do
@@ -695,6 +752,13 @@ module Incognia
         to eql expected[:evidence][:location_services][:location_permission_enabled]
       expect(model.evidence.location_services.location_sensors_enabled).
         to eql expected[:evidence][:location_services][:location_sensors_enabled]
+    end
+
+    def expect_signals_to_match(model, expected)
+      expect(model.signals.request.to_h).
+        to eql expected[:signals][:request]
+      expect(model.signals.installation.to_h).
+        to eql expected[:signals][:installation]
     end
   end
 end

@@ -51,7 +51,7 @@ For sandbox credentials, refer to the [API testing guide](https://developer.inco
 
 ### Registering a Signup
 
-This method registers a new signup for the given request token and address, returning a signup assessment, containing the risk assessment and supporting evidence:
+This method registers a new signup for the given request token and address, returning a signup assessment, containing the risk assessment and supporting evidence/signals:
 
 ```ruby
 address = Incognia::Address.new(line: "West 34th Street, New York City, NY 10001")
@@ -62,8 +62,7 @@ assessment = Incognia::Api.register_signup(
   address: address
 )
 
-# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="..", evidence=...>
-
+# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="...", (evidence | signals)=...>
 ```
 
 It also supports optional parameters, for example:
@@ -100,12 +99,13 @@ assessment = Incognia::Api.register_signup(
   person_id: person_id
 )
 
-# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="...", (evidence | signals)=...>
+
 ```
 
 ### Registering a Login
 
-This method registers a new login for the given request token and account, returning a login assessment, containing the risk assessment and supporting evidence:
+This method registers a new login for the given request token and account, returning a login assessment, containing the risk assessment and supporting evidence/signals:
 
 ```ruby
 request_token = "WlMksW+jh5GPhqWBorsV8yDihoSHHpmt+DpjJ7eYxpHhuO/5tuHTuA..."
@@ -116,7 +116,8 @@ assessment = Incognia::Api.register_login(
   account_id: account_id,
 )
 
-# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="...", (evidence | signals)=...>
+
 
 ```
 
@@ -149,13 +150,13 @@ assessment = Incognia::Api.register_login(
   eval: false # can be used to register a new login without evaluating it
 )
 
-# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="...", (evidence | signals)=...>
 ```
 
 ### Registering Payment
 
 This method registers a new payment for the given request token and account, returning a `hash`,
-containing the risk assessment and supporting evidence.
+containing the risk assessment and supporting evidence/signals.
 
 ```ruby
 assessment = Incognia::Api.register_payment(
@@ -163,7 +164,7 @@ assessment = Incognia::Api.register_payment(
   account_id: 'account-id'
 )
 
-# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="...", (evidence | signals)=...>
 ```
 
 It also supports optional parameters, for example:
@@ -235,7 +236,7 @@ assessment = Incognia::Api.register_payment(
   payment_methods: payment_methods
 )
 
-# => #<OpenStruct id="...", device_id="...", risk_assessment="..", evidence=...>
+# => #<OpenStruct id="...", request_id="...", device_id="...", risk_assessment="...", (evidence | signals)=...>
 ```
 
 ### Registering a Feedback

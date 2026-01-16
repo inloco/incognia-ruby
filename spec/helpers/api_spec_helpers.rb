@@ -6,11 +6,20 @@ module APISpecHelpers
     rspec.let(:unknown_signup_fixture) do
       File.new("spec/fixtures/signup-unknown.json").read
     end
+    rspec.let(:unknown_signup_with_signals_fixture) do
+      File.new("spec/fixtures/signup-unknown-with-signals.json").read
+    end
     rspec.let(:unknown_login_fixture) do
       File.new("spec/fixtures/login-unknown.json").read
     end
+    rspec.let(:unknown_login_with_signals_fixture) do
+      File.new("spec/fixtures/login-unknown-with-signals.json").read
+    end
     rspec.let(:unknown_payment_fixture) do
       File.new("spec/fixtures/payment-unknown.json").read
+    end
+    rspec.let(:unknown_payment_with_signals_fixture) do
+      File.new("spec/fixtures/payment-unknown-with-signals.json").read
     end
     rspec.let(:missing_required_params_fixture) do
       File.new("spec/fixtures/missing-required-params.json").read
@@ -48,6 +57,14 @@ module APISpecHelpers
         headers: { 'Content-Type' => 'application/json' })
   end
 
+  def stub_signup_request_with_signals
+    stub_request(:post, "https://api.incognia.com/api/v2/onboarding/signups").
+      to_return(
+        status: 200,
+        body: unknown_signup_with_signals_fixture,
+        headers: { 'Content-Type' => 'application/json' })
+  end
+
   def stub_signup_request_400(error = nil)
     response_body = error ? JSON.generate(error) : missing_required_params_fixture
 
@@ -76,6 +93,17 @@ module APISpecHelpers
         headers: { 'Content-Type' => 'application/json' })
   end
 
+  def stub_login_request_with_signals
+    stub_request(
+      :post, "https://api.incognia.com/api/v2/authentication/transactions"
+    ).
+      with(body: hash_including(type: 'login')).
+      to_return(
+        status: 200,
+        body: unknown_login_with_signals_fixture,
+        headers: { 'Content-Type' => 'application/json' })
+  end
+
   def stub_payment_request
     stub_request(
       :post, "https://api.incognia.com/api/v2/authentication/transactions"
@@ -83,6 +111,16 @@ module APISpecHelpers
     to_return(
       status: 200,
       body: unknown_payment_fixture,
+      headers: { 'Content-Type' => 'application/json' })
+  end
+
+  def stub_payment_request_with_signals
+    stub_request(
+      :post, "https://api.incognia.com/api/v2/authentication/transactions"
+    ).with(body: hash_including(type: 'payment')).
+    to_return(
+      status: 200,
+      body: unknown_payment_with_signals_fixture,
       headers: { 'Content-Type' => 'application/json' })
   end
 

@@ -1,0 +1,21 @@
+{
+  "id": "162f6347-5499-4d8a-915b-62cba4f87ccf",
+  "policy_id": "f9ea32df-f6e9-4e7e-9f1f-78025de68069",
+  "risk_assessment": "unknown_risk",
+  "reasons": [
+    {
+      "code": "fallback_rule",
+      "source": "local"
+    }
+  ],
+  "signals": {
+    "request": {
+      "has_invalid_request_token": false
+    },
+    "installation": {
+      "bot_detection": "not_detected"
+    }
+  },
+  "installation_id": "C1txaIQhz_uka5Upg3qV5AtYBeCbuWt4rvIX_74UP-aTsvTtQkfV3XiVEGfTQLLojq8MH2rirhOkceOjsfAVKg",
+  "device_id": "C1txaIQhz_uka5Upg3qV5Mev2pSUD3HjlaxQ7pVErzMjxK_GSyNIMpIylWHAt7YY5VfQ4M4jJR4lkfT3IyfJVA"
+}
