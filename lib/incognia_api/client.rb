@@ -1,21 +1,39 @@
 require "time"
 require "singleton"
+require "faraday"
 
 module Incognia
   class Client
     include Singleton
+    LATENCY_HEADER = "X-Incognia-Latency".freeze
+
     # TODO:
     # (ok) http/adapter specific code
     # (ok) raises network/authentication errors
     # (ok) handles token refreshing ok
     # future: handles retrying
 
+    def initialize
+      @last_latency_ms = nil
+      @last_latency_mutex = Mutex.new
+    end
+
     def request(method, endpoint = nil, data = nil, headers = {})
       json_data = JSON.generate(data) if data
+      request_headers = Faraday::Utils::Headers.new.update(headers)
+      request_headers[Faraday::Request::Authorization::KEY] ||= "Bearer #{credentials.access_token}"
 
-      connection.send(method, endpoint, json_data, headers) do |r|
-        r.headers[Faraday::Request::Authorization::KEY] ||= "Bearer #{credentials.access_token}"
+      if (latency = last_latency_ms)
+        request_headers[LATENCY_HEADER] = latency.to_s
       end
+
+      start = Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond)
+      response = connection.send(method, endpoint, json_data, request_headers)
+      if response.success?
+        store_last_latency(Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond) - start)
+      end
+
+      response
     rescue Faraday::ClientError, Faraday::ServerError => e
       raise APIError.new(e.to_s, e.response)
     rescue Faraday::Error => e
@@ -71,6 +89,14 @@ module Incognia
       )
 
       Credentials.from_hash(properties)
+    end
+
+    def last_latency_ms
+      @last_latency_mutex.synchronize { @last_latency_ms }
+    end
+
+    def store_last_latency(latency_ms)
+      @last_latency_mutex.synchronize { @last_latency_ms = latency_ms }
     end
 
   end
