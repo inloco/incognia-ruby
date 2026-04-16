@@ -39,13 +39,23 @@ Before using the API client, you must configure it using credentials obtained
 from the [Incognia dashboard](https://dash.incognia.com/):
 
 ```ruby
-Incognia.configure(client_id: ENV['INCOGNIA_CLIENT_ID'], client_secret: ENV['INCOGNIA_CLIENT_SECRET'])
+Incognia.configure(
+  client_id: ENV['INCOGNIA_CLIENT_ID'],
+  client_secret: ENV['INCOGNIA_CLIENT_SECRET']
+)
+```
 
-# Incognia.configure(client_id: "your-client-id", client_secret: "your-client-secret")
+To reuse HTTP connections between requests, enable `keep_alive`. When enabled,
+`max_connections` sets the maximum number of concurrent persistent
+connections used by the client.
 
-# Keep HTTP connections alive and allow up to 5 concurrent connections.
-# max_connections only applies when keep_alive is enabled.
-# Incognia.configure(client_id: "your-client-id", client_secret: "your-client-secret", keep_alive: true, max_connections: 5)
+```ruby
+Incognia.configure(
+  client_id: ENV['INCOGNIA_CLIENT_ID'],
+  client_secret: ENV['INCOGNIA_CLIENT_SECRET'],
+  keep_alive: true,
+  max_connections: 5
+)
 ```
 
 For sandbox credentials, refer to the [API testing guide](https://developer.incognia.com/).
