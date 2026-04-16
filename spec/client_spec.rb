@@ -144,6 +144,25 @@ module Incognia
       end
     end
 
+    describe "#connection" do
+      before { Singleton.__init__(described_class) }
+
+      it "uses the persistent adapter with the configured max_connections" do
+        Incognia.configure(
+          client_id: 'client_id',
+          client_secret: 'client_secret',
+          host: 'https://api.incognia.com/api',
+          keep_alive: true,
+          max_connections: 5
+        )
+
+        adapter = instance.connection.builder.adapter
+
+        expect(adapter.klass).to eq(Faraday::Adapter::NetHttpPersistent)
+        expect(adapter.instance_variable_get(:@kwargs)).to eq(pool_size: 5)
+      end
+    end
+
     describe "#credentials" do
       before { Singleton.__init__(described_class) }
 

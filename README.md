@@ -42,6 +42,10 @@ from the [Incognia dashboard](https://dash.incognia.com/):
 Incognia.configure(client_id: ENV['INCOGNIA_CLIENT_ID'], client_secret: ENV['INCOGNIA_CLIENT_SECRET'])
 
 # Incognia.configure(client_id: "your-client-id", client_secret: "your-client-secret")
+
+# Keep HTTP connections alive and allow up to 5 concurrent connections.
+# max_connections only applies when keep_alive is enabled.
+# Incognia.configure(client_id: "your-client-id", client_secret: "your-client-secret", keep_alive: true, max_connections: 5)
 ```
 
 For sandbox credentials, refer to the [API testing guide](https://developer.incognia.com/).

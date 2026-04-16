@@ -28,6 +28,12 @@ module Incognia
       @credentials
     end
 
+    def reset!
+      @connection&.close
+      @connection = nil
+      @credentials = nil
+    end
+
     def connection
       return @connection if @connection
 
@@ -41,7 +47,16 @@ module Incognia
         faraday.response :json, content_type: /\bjson$/
         faraday.response :raise_error
 
-        faraday.adapter Faraday.default_adapter
+        if Incognia.config.keep_alive
+          require 'faraday/net_http_persistent'
+
+          adapter_options = {}
+          adapter_options[:pool_size] = Incognia.config.max_connections if Incognia.config.max_connections
+
+          faraday.adapter :net_http_persistent, **adapter_options
+        else
+          faraday.adapter Faraday.default_adapter
+        end
       end
     end
 

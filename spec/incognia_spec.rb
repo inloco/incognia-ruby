@@ -87,6 +87,7 @@ module Incognia
 
         it "hits the endpoint with person_id" do
           person_id = PersonId.new(type: "cpf", value: "12345678901")
+          stub_token_request
 
           stub = stub_signup_request.with(
             body: {
@@ -231,6 +232,7 @@ module Incognia
 
         it "hits the endpoint with person_id" do
           person_id = PersonId.new(type: "cpf", value: "12345678901")
+          stub_token_request
 
           stub = stub_login_request.with(
             body: {
@@ -382,6 +384,7 @@ module Incognia
 
         it "hits the endpoint with person_id" do
           person_id = PersonId.new(type: "cpf", value: "12345678901")
+          stub_token_request
 
           stub = stub_payment_request.with(
             body: {
