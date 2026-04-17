@@ -23,12 +23,10 @@ module Incognia
       request_headers = Faraday::Utils::Headers.new.update(headers)
       request_headers[Faraday::Request::Authorization::KEY] ||= "Bearer #{credentials.access_token}"
 
-      if (latency = last_latency_ms)
-        request_headers[LATENCY_HEADER] = latency.to_s
-      end
+      request_headers[LATENCY_HEADER] = last_latency_ms.to_s if last_latency_ms
 
       start = Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond)
-      response = connection.send(method, endpoint, json_data, request_headers)
+      response = connection.send(method, endpoint, json_data, request_headers.compact)
       if response.success?
         store_last_latency(Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond) - start)
       end
