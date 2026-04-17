@@ -254,6 +254,29 @@ module Incognia
       end
     end
 
+    describe "#connection" do
+      before { Singleton.__init__(described_class) }
+      after { instance.reset! }
+
+      it "uses the persistent adapter with the configured max_connections" do
+        Incognia.configure(
+          client_id: 'client_id',
+          client_secret: 'client_secret',
+          host: 'https://api.incognia.com/api',
+          keep_alive: true,
+          max_connections: 5
+        )
+
+        allow_any_instance_of(Faraday::RackBuilder).to receive(:adapter).and_call_original
+        expect_any_instance_of(Faraday::RackBuilder).to receive(:adapter)
+          .with(:net_http_persistent, pool_size: 5)
+          .and_call_original
+
+        instance.connection
+
+      end
+    end
+
     describe "#credentials" do
       it "requests an access token from the /token endpoint" do
         stub = stub_token_request
