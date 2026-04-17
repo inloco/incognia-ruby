@@ -22,14 +22,11 @@ module Incognia
       json_data = JSON.generate(data) if data
       request_headers = Faraday::Utils::Headers.new.update(headers)
       request_headers[Faraday::Request::Authorization::KEY] ||= "Bearer #{credentials.access_token}"
-
-      request_headers[LATENCY_HEADER] = last_latency_ms.to_s if last_latency_ms
+      request_headers[LATENCY_HEADER] = last_latency_ms&.to_s
 
       start = Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond)
       response = connection.send(method, endpoint, json_data, request_headers.compact)
-      if response.success?
-        store_last_latency(Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond) - start)
-      end
+      store_last_latency(Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond) - start) if response.success?
 
       response
     rescue Faraday::ClientError, Faraday::ServerError => e
