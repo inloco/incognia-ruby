@@ -146,6 +146,7 @@ module Incognia
 
     describe "#connection" do
       before { Singleton.__init__(described_class) }
+      after { instance.reset! }
 
       it "uses the persistent adapter with the configured max_connections" do
         Incognia.configure(
@@ -156,10 +157,13 @@ module Incognia
           max_connections: 5
         )
 
-        adapter = instance.connection.builder.adapter
+        allow_any_instance_of(Faraday::RackBuilder).to receive(:adapter).and_call_original
+        expect_any_instance_of(Faraday::RackBuilder).to receive(:adapter)
+          .with(:net_http_persistent, pool_size: 5)
+          .and_call_original
 
-        expect(adapter.klass).to eq(Faraday::Adapter::NetHttpPersistent)
-        expect(adapter.instance_variable_get(:@kwargs)).to eq(pool_size: 5)
+        instance.connection
+
       end
     end
 

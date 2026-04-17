@@ -1,5 +1,6 @@
 require "time"
 require "singleton"
+require "faraday/net_http_persistent"
 
 module Incognia
   class Client
@@ -48,10 +49,9 @@ module Incognia
         faraday.response :raise_error
 
         if Incognia.config.keep_alive
-          require 'faraday/net_http_persistent'
-
-          adapter_options = {}
-          adapter_options[:pool_size] = Incognia.config.max_connections if Incognia.config.max_connections
+          adapter_options = {
+            pool_size: Incognia.config.max_connections
+          }.compact
 
           faraday.adapter :net_http_persistent, **adapter_options
         else
