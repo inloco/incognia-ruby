@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [3.1.0] - 2026-04-17
+- Add optional `keep_alive` support with configurable `max_connections` for persistent HTTP connections.
+- Add `X-Incognia-Latency` support by sending the previous successful request latency on subsequent API calls.
+- Refresh locked dependencies, including `faraday` 2.14.1 and `json` 2.15.2.1.
+
 ## [3.0.0] - 2025-09-22
 - Update `faraday` dependency to version 2.13.4
 - Remove `faraday_middleware` dependency
