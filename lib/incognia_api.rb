@@ -19,7 +19,7 @@ require_relative "incognia_api/constants/feedback_event"
 
 module Incognia
   def self.configure(**args)
-    config.configure(**args)
+    config.configure(**args).tap { Client.instance.reset! }
   end
 
   def self.config
