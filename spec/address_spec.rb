@@ -7,6 +7,7 @@ module Incognia
     let(:country_code) { "US" }
     let(:state) { "NY" }
     let(:city) { "New York City" }
+    let(:county) { "New York County" }
     let(:borough) { "Manhattan" }
     let(:neighborhood) { "Midtown" }
     let(:street) { "W 34th St." }
@@ -20,6 +21,7 @@ module Incognia
         country_code: country_code,
         state: state,
         city: city,
+        county: county,
         borough: borough,
         neighborhood: neighborhood,
         street: street,
