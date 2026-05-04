@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [3.2.0] - 2026-05-04
+- Add `county` support to structured addresses.
+
 ## [3.1.0] - 2026-04-17
 - Add optional `keep_alive` support with configurable `max_connections` for persistent HTTP connections.
 - Add `X-Incognia-Latency` support by sending the previous successful request latency on subsequent API calls.

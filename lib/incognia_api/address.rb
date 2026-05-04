@@ -25,19 +25,20 @@ module Incognia
     end
 
     class Structured
-      attr_reader :locale, :country_name, :country_code, :state, :city, :borough,
-        :neighborhood, :state, :city, :borough, :neighborhood, :postal_code,
-        :street, :number, :complements
+      attr_reader :locale, :country_name, :country_code, :state, :city, :county,
+        :borough, :neighborhood, :postal_code, :street, :number, :complements
 
       def initialize(locale: nil, country_name: nil, country_code: nil, \
-                     state: nil, city: nil, borough: nil, neighborhood: nil, \
-                     postal_code: nil, street: nil, number: nil, complements: nil)
+                     state: nil, city: nil, county: nil, borough: nil, \
+                     neighborhood: nil, postal_code: nil, street: nil, \
+                     number: nil, complements: nil)
 
         @locale = locale
         @country_name = country_name
         @country_code = country_code
         @state = state
         @city = city
+        @county = county
         @borough = borough
         @neighborhood = neighborhood
         @postal_code = postal_code
@@ -54,6 +55,7 @@ module Incognia
             country_code: country_code,
             state: state,
             city: city,
+            county: county,
             borough: borough,
             neighborhood: neighborhood,
             street: street,
