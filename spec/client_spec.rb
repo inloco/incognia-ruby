@@ -14,7 +14,8 @@ module Incognia
       Incognia.configure(
         client_id: 'client_id',
         client_secret: 'client_secret',
-        host: 'https://api.incognia.com/api'
+        host: 'https://api.incognia.com/api',
+        keep_alive: false
       )
     end
 
@@ -257,6 +258,37 @@ module Incognia
     describe "#connection" do
       before { Singleton.__init__(described_class) }
       after { instance.reset! }
+
+      it "uses the persistent adapter by default" do
+        Incognia.configure(
+          client_id: 'client_id',
+          client_secret: 'client_secret',
+          host: 'https://api.incognia.com/api'
+        )
+
+        allow_any_instance_of(Faraday::RackBuilder).to receive(:adapter).and_call_original
+        expect_any_instance_of(Faraday::RackBuilder).to receive(:adapter)
+          .with(:net_http_persistent)
+          .and_call_original
+
+        instance.connection
+      end
+
+      it "uses the default adapter when keep_alive is false" do
+        Incognia.configure(
+          client_id: 'client_id',
+          client_secret: 'client_secret',
+          host: 'https://api.incognia.com/api',
+          keep_alive: false
+        )
+
+        allow_any_instance_of(Faraday::RackBuilder).to receive(:adapter).and_call_original
+        expect_any_instance_of(Faraday::RackBuilder).to receive(:adapter)
+          .with(Faraday.default_adapter)
+          .and_call_original
+
+        instance.connection
+      end
 
       it "uses the persistent adapter with the configured max_connections" do
         Incognia.configure(

@@ -30,6 +30,8 @@ module Incognia
     attr_reader :message, :errors, :status
 
     def initialize(message, response_info = {})
+      response_info ||= {}
+
       @status = response_info[:status]
       @errors = response_info[:body]
       @message = format_message(message)

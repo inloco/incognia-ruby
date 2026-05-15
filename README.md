@@ -45,16 +45,26 @@ Incognia.configure(
 )
 ```
 
-To reuse HTTP connections between requests, enable `keep_alive`. When enabled,
-`max_connections` sets the maximum number of concurrent persistent
-connections used by the client.
+HTTP connection reuse is enabled by default. When connection reuse is enabled,
+`max_connections` sets the maximum number of concurrent persistent connections
+used by the client.
 
 ```ruby
 Incognia.configure(
   client_id: ENV['INCOGNIA_CLIENT_ID'],
   client_secret: ENV['INCOGNIA_CLIENT_SECRET'],
-  keep_alive: true,
   max_connections: 5
+)
+```
+
+To disable persistent connections, set `keep_alive: false`. `max_connections`
+can only be configured when `keep_alive` is enabled.
+
+```ruby
+Incognia.configure(
+  client_id: ENV['INCOGNIA_CLIENT_ID'],
+  client_secret: ENV['INCOGNIA_CLIENT_SECRET'],
+  keep_alive: false
 )
 ```
 

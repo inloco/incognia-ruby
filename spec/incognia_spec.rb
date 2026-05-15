@@ -15,13 +15,15 @@ module Incognia
       expect(Configuration.instance.client_id).to eq(config[:client_id])
       expect(Configuration.instance.client_secret).to eq(config[:client_secret])
       expect(Configuration.instance.host).to eq(config[:host])
+      expect(Configuration.instance.keep_alive).to eq(true)
     end
 
-    it 'raises when max_connections is set without keep_alive' do
+    it 'raises when max_connections is set with keep_alive disabled' do
       expect {
         Incognia.configure(
           client_id: SecureRandom.uuid,
           client_secret: SecureRandom.uuid,
+          keep_alive: false,
           max_connections: 5
         )
       }.to raise_error(ArgumentError, 'max_connections requires keep_alive: true')
@@ -61,7 +63,8 @@ module Incognia
       Incognia.configure(
         client_id: 'client_id',
         client_secret: 'client_secret',
-        host: 'https://api.incognia.com/api'
+        host: 'https://api.incognia.com/api',
+        keep_alive: false
       )
     end
 
